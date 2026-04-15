@@ -48,12 +48,27 @@ const DashboardApp = () => {
       <div className="dash-section">
         <h3>Emotional Distribution</h3>
         <div className="distribution-list">
-          {Object.entries(data.emotion_distribution).map(([label, count]) => (
-            <div key={label} className="dist-row">
-              <span className="dist-label">{label}</span>
-              <span className="dist-count">{count} sessions</span>
-            </div>
-          ))}
+          {Object.entries(data.emotion_distribution).map(([label, count]) => {
+            const total = Object.values(data.emotion_distribution).reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? (count / total) * 100 : 0;
+            return (
+              <div key={label} className="dist-row">
+                <div className="dist-info">
+                  <span className="dist-label">{label}</span>
+                  <span className="dist-count">{count} {count === 1 ? 'session' : 'sessions'}</span>
+                </div>
+                <div className="dist-bar-bg">
+                  <div 
+                    className="dist-bar-fill" 
+                    style={{ 
+                      width: `${percentage}%`,
+                      backgroundColor: label === data.last_detected_state ? 'var(--bg-dark-green)' : '#E0E0E0'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>

@@ -16,7 +16,7 @@ const Hero = ({ onLoginClick }) => {
             for help
           </h1>
           <p className="hero-desc">
-            Hilary integrates text, speech, facial expression, and screen behavior into a unified AI system — delivering early detection of mental issues and personalized, real-time therapy.
+            MindScape integrates text, speech, facial expression, and screen behavior into a unified AI system — delivering early detection of mental issues and personalized, real-time therapy.
           </p>
           <div className="hero-actions">
             <button className="btn desktop-hero-btn" onClick={onLoginClick}>EXPLORE THE SYSTEM</button>
@@ -26,7 +26,7 @@ const Hero = ({ onLoginClick }) => {
         
         <div className="hero-graphic">
           <div className="circle-system">
-             <div className="hub">Hilary</div>
+             <div className="hub">MindScape</div>
              <div className="orbit orbit-1"></div>
              <div className="orbit orbit-2"></div>
              <div className="orbit orbit-3"></div>

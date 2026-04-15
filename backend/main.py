@@ -28,8 +28,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(
-    title="Hilary AI Mental Health API",
-    description="Backend for the Hilary AI Therapist assistant.",
+    title="MindScape AI Mental Health API",
+    description="Backend for the MindScape AI Therapist assistant.",
     version="1.0.0",
     lifespan=lifespan
 )

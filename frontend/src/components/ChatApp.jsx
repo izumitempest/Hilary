@@ -86,7 +86,7 @@ const ChatApp = ({ onLogout }) => {
     <div className="chat-layout animate-fade-in">
       {/* Sidebar for Desktop */}
       <div className="chat-sidebar">
-        <div className="sidebar-logo">Hilary</div>
+        <div className="sidebar-logo">MindScape</div>
         
         <div className="sidebar-nav">
           <button onClick={handleNewSession} className="new-chat-btn">
@@ -123,7 +123,7 @@ const ChatApp = ({ onLogout }) => {
 
       {/* Header and Bottom Nav for Mobile */}
       <div className="mobile-only mobile-header">
-        <div className="logo-small">Hilary</div>
+        <div className="logo-small">MindScape</div>
         <button onClick={() => { apiClient.logout(); onLogout(); }} className="mobile-logout">
           Logout
         </button>

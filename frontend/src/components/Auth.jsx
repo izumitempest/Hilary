@@ -57,7 +57,7 @@ const Auth = ({ onLoginSuccess, onBack }) => {
           <>
             <button onClick={onBack} className="close-btn">&times;</button>
             <h2 style={{ fontFamily: 'Playfair Display', marginBottom: '10px' }}>
-              {isLogin ? 'Welcome back' : 'Join Hilary'}
+              {isLogin ? 'Welcome back' : 'Join MindScape'}
             </h2>
             <p style={{ color: 'var(--text-light)', marginBottom: '30px', fontSize: '0.9rem' }}>
               {isLogin 

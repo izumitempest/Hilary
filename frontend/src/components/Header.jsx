@@ -7,7 +7,7 @@ const Header = ({ onLoginClick }) => {
   return (
     <header className="header animate-fade-in">
       <div className="container header-container">
-        <div className="logo">Hilary AI</div>
+        <div className="logo">MindScape</div>
         
         <button 
           className="mobile-menu-toggle" 

@@ -96,7 +96,37 @@
 }
 
 @media (max-width: 768px) {
+  .modalities {
+    padding: 3rem 0;
+  }
+
+  .mod-title {
+    font-size: 2.25rem;
+  }
+
+  .mod-tabs {
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .tab {
+    flex-shrink: 0;
+    padding-bottom: 1rem;
+  }
+
   .mod-content {
     flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .mod-visual {
+    height: 300px;
+    width: 100%;
+  }
+
+  .mod-text h3 {
+    font-size: 1.5rem;
   }
 }

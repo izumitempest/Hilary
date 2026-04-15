@@ -20,8 +20,8 @@ const Auth = ({ onLoginSuccess, onBack }) => {
     setError(null);
     try {
       if (isLogin) {
-        await apiClient.login(email, password);
-        onLoginSuccess();
+        const userData = await apiClient.login(email, password);
+        onLoginSuccess(userData);
       } else {
         if (!username) {
           setError('Username is required for registration.');
@@ -57,7 +57,7 @@ const Auth = ({ onLoginSuccess, onBack }) => {
           <>
             <button onClick={onBack} className="close-btn">&times;</button>
             <h2 style={{ fontFamily: 'Playfair Display', marginBottom: '10px' }}>
-              {isLogin ? 'Welcome back' : 'Join MindScape'}
+              {isLogin ? 'Welcome back' : 'Join Hilary'}
             </h2>
             <p style={{ color: 'var(--text-light)', marginBottom: '30px', fontSize: '0.9rem' }}>
               {isLogin 

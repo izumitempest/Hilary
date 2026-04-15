@@ -92,12 +92,29 @@ export const apiClient = {
     });
 
     if (!response.ok) {
-      throw new Error('Invalid credentials');
+      const text = await response.text();
+      let detail = 'Invalid credentials';
+      try {
+        const err = JSON.parse(text);
+        detail = err.detail || detail;
+      } catch (e) { /* fallback to default */ }
+      throw new Error(detail);
     }
 
     const data = await response.json();
     localStorage.setItem('token', data.access_token);
-    return data;
+    
+    // FETCH THE USER DATA IMMEDIATELY
+    const userResponse = await fetch(`${BASE_URL}/auth/me`, {
+      headers: { 'Authorization': `Bearer ${data.access_token}` }
+    });
+    
+    if (userResponse.ok) {
+        const userData = await userResponse.json();
+        return userData;
+    }
+    
+    return { email }; // Fallback
   },
 
   logout() {

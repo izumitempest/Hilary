@@ -57,6 +57,10 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
             detail="We encountered an issue creating your account. Our engineers have been notified."
         )
 
+@router.get("/me", response_model=UserRead)
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     user = session.exec(select(User).where(User.email == form_data.username)).first()

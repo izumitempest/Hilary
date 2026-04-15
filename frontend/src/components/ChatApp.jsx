@@ -84,8 +84,9 @@ const ChatApp = ({ onLogout }) => {
 
   return (
     <div className="chat-layout animate-fade-in">
+      {/* Sidebar for Desktop */}
       <div className="chat-sidebar">
-        <div className="sidebar-logo">MindScape</div>
+        <div className="sidebar-logo">Hilary</div>
         
         <div className="sidebar-nav">
           <button onClick={handleNewSession} className="new-chat-btn">
@@ -117,6 +118,32 @@ const ChatApp = ({ onLogout }) => {
         
         <div className="sidebar-footer">
           <button onClick={() => { apiClient.logout(); onLogout(); }} className="logout-btn-text">Log Out</button>
+        </div>
+      </div>
+
+      {/* Header and Bottom Nav for Mobile */}
+      <div className="mobile-only mobile-header">
+        <div className="logo-small">Hilary</div>
+        <button onClick={() => { apiClient.logout(); onLogout(); }} className="mobile-logout">
+          Logout
+        </button>
+      </div>
+      
+      <div className="mobile-only mobile-tabs">
+        <div 
+          className={`tab-item ${view === 'chat' ? 'active' : ''}`} 
+          onClick={() => setView('chat')}
+        >
+          Session
+        </div>
+        <div 
+          className={`tab-item ${view === 'dashboard' ? 'active' : ''}`} 
+          onClick={() => setView('dashboard')}
+        >
+          Insights
+        </div>
+        <div className="tab-item" onClick={handleNewSession} style={{ color: 'var(--bg-dark-green)' }}>
+          Reset
         </div>
       </div>
       

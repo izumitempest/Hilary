@@ -18,11 +18,32 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 60px 50px;
   border-radius: 32px;
-  width: 100%;
+  width: 90%;
   max-width: 480px;
   position: relative;
   box-shadow: 0 40px 100px rgba(0,0,0,0.5);
   color: white;
+  margin: 20px;
+}
+
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 40px 25px;
+    border-radius: 24px;
+  }
+  
+  .auth-card h2 {
+    font-size: 1.8rem;
+  }
+  
+  .input-group input {
+    padding: 14px 20px;
+  }
+  
+  .close-btn {
+    top: 15px;
+    right: 15px;
+  }
 }
 
 .auth-card h2 {

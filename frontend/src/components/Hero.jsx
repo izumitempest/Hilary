@@ -16,17 +16,17 @@ const Hero = ({ onLoginClick }) => {
             for help
           </h1>
           <p className="hero-desc">
-            MindScape integrates text, speech, facial expression, and screen behavior into a unified AI system — delivering early detection of mental health conditions and personalized, real-time feedback.
+            Hilary integrates text, speech, facial expression, and screen behavior into a unified AI system — delivering early detection of mental issues and personalized, real-time therapy.
           </p>
           <div className="hero-actions">
-            <button className="btn" style={{ backgroundColor: '#2D5A4C' }} onClick={onLoginClick}>EXPLORE THE SYSTEM</button>
-            <button className="btn btn-outline" style={{ marginLeft: '15px' }}>VIEW MODALITIES</button>
+            <button className="btn desktop-hero-btn" onClick={onLoginClick}>EXPLORE THE SYSTEM</button>
+            <button className="btn btn-outline desktop-hero-btn" style={{ marginLeft: '15px' }}>VIEW MODALITIES</button>
           </div>
         </div>
         
         <div className="hero-graphic">
           <div className="circle-system">
-             <div className="hub">Mind<br/>Scape</div>
+             <div className="hub">Hilary</div>
              <div className="orbit orbit-1"></div>
              <div className="orbit orbit-2"></div>
              <div className="orbit orbit-3"></div>

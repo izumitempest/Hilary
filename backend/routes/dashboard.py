@@ -6,7 +6,7 @@ from ..models.user import User
 from ..models.chat import ChatMessage
 from ..models.behavior import BehavioralData
 from .auth import get_current_user
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
 
@@ -20,7 +20,7 @@ async def get_dashboard_summary(
     """
     # 1. Emotional Distribution (from Chat History)
     # We look at the last 30 days
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
     
     # Query messages
     messages = session.exec(

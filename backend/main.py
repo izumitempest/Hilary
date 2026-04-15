@@ -7,15 +7,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
 app = FastAPI(
     title="Hilary AI Mental Health API",
     description="Backend for the Hilary AI Therapist assistant.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
-
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
 
 # CORS configuration
 app.add_middleware(

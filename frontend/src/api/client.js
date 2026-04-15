@@ -1,4 +1,4 @@
-const BASE_URL = 'http://127.0.0.1:8000'; // Make sure backend runs on 127.0.0.1 for local web dev
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 
 export const apiClient = {
   async post(path, data, authenticated = true) {
@@ -67,7 +67,7 @@ export const apiClient = {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ email, password, full_name: username }),
     });
 
     if (!response.ok) {

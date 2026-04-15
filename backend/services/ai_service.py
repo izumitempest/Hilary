@@ -1,74 +1,128 @@
 import os
 import json
+import logging
 from groq import Groq
 from typing import List, Dict
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class GroqService:
     def __init__(self):
         self.api_key = os.getenv("GROQ_API_KEY")
         if not self.api_key:
-            # Fallback for dev env if env var is missing
+            logger.warning("GROQ_API_KEY not found in environment variables.")
             self.api_key = "PLEASE_SET_YOUR_GROQ_API_KEY"
+        
         self.client = Groq(api_key=self.api_key)
+        # Use a highly capable model for therapeutic reasoning
         self.model = "llama-3.3-70b-versatile"
 
     async def get_therapist_response(self, messages: List[Dict[str, str]], current_state: str) -> Dict:
-        system_prompt = f\"\"\"
-        You are Hilary, a world-class AI psychotherapist and behavioral health specialist. 
-        Your goal is to provide deep, empathetic, and evidence-based support (CBT, DBT, and humanistic approaches).
+        """
+        Queries the Groq API to get a therapeutic response and sentiment analysis.
+        Returns a dictionary with keys: response, detected_sentiment, intensity, insights.
+        """
+        system_prompt = f"""
+        You are Hilary, a world-class AI psychotherapist. 
+        Your goal is to provide deep, empathetic, and evidence-based support.
 
-        CONTEXT:
-        The patient's current emotional state is detected as: \"{current_state}\".
+        USER CONTEXT:
+        The current detected emotional state is: "{current_state}".
 
-        GUIDELINES:
-        1. Empathy First: Validate the patient's feelings immediately.
-        2. Depth: Don't just give advice; explore the root causes and feelings.
-        3. Professionalism: Maintain a calm, safe, and clinical yet warm tone.
-        4. Safety: If you detect high risk (suicide, self-harm), prioritize safety resources and encourage professional help.
-        5. Analysis: Observe patterns in their speech.
-
-        OUTPUT FORMAT:
-        You MUST respond in a valid JSON format with the following keys:
-        - "response": Your empathetic therapeutic response.
-        - "detected_sentiment": A string representing the user's emotion (e.g., "Critical Distress", "Distressed/Anxious", "Neutral", "Calm/Content", "Positive/Happy").
-        - "intensity": A float from 1.0 to 10.0 indicating the intensity of the emotion.
-        - "insights": A brief analytical observation about the user's current mental state.
-
-        Example:
-        {{
-          "response": "I hear how much pain you are in...",
-          "detected_sentiment": "Critical Distress",
-          "intensity": 9.5,
-          "insights": "User is expressing profound hopelessness and withdrawal."
-        }}
-        \"\"\"
+        INSTRUCTIONS:
+        1. Respond with warmth and empathy.
+        2. Detect the user's current emotion precisely.
+        3. Provide a brief 'insight' or observation about their progress or current state.
         
-        full_messages = [{"role": "system", "content": system_prompt}] + messages
+        OUTPUT:
+        You MUST return a JSON object. No other text.
+        Structure:
+        {{
+          "response": "string",
+          "detected_sentiment": "Critical Distress" | "Distressed/Anxious" | "Neutral" | "Calm/Content" | "Positive/Happy",
+          "intensity": float (1.0 - 10.0),
+          "insights": "string"
+        }}
+        """
+        
+        # Ensure we only send valid roles to the API
+        processed_messages = []
+        for msg in messages:
+            if msg.get("role") in ["user", "assistant"]:
+                processed_messages.append({"role": msg["role"], "content": msg["content"]})
+
+        full_messages = [{"role": "system", "content": system_prompt}] + processed_messages
         
         try:
             chat_completion = self.client.chat.completions.create(
                 messages=full_messages,
                 model=self.model,
-                response_format={"type": "json_object"}
+                response_format={"type": "json_object"},
+                temperature=0.7,
+                max_tokens=1024
             )
-            content = chat_completion.choices[0].message.content
-            return json.loads(content)
+            
+            raw_content = chat_completion.choices[0].message.content
+            logger.info(f"AI raw response: {raw_content}")
+            
+            data = json.loads(raw_content)
+            
+            # Simple validation of keys
+            if "response" not in data:
+                data["response"] = raw_content # fallback if it's not JSON despite the instruction
+                
+            return data
+            
         except Exception as e:
-            print(f"AI Service Error: {e}")
-            # Fallback
+            logger.error(f"AI Service Error: {str(e)}")
             return {
-                "response": "I'm here for you. Can you tell me more about what's on your mind?",
+                "response": "I'm processing what you've shared. It sounds like you're going through a lot right now. Could you tell me more?",
                 "detected_sentiment": "Neutral",
                 "intensity": 5.0,
-                "insights": "Error in AI processing."
+                "insights": "Thinking deeply about our conversation..."
             }
 
     async def get_vision_emotion(self, image_b64: str) -> str:
-        # Placeholder for Llama 3.2 Vision
-        return "Neutral"
+        """Analyze base64 image using Groq Vision model."""
+        try:
+            completion = self.client.chat.completions.create(
+                model="llama-3.2-11b-vision-preview",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "Analyze the facial expression and body language in this image. Output only the detected emotion (e.g., Happy, Sad, Anxious, Neutral)."},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{image_b64}",
+                                },
+                            },
+                        ],
+                    }
+                ],
+                temperature=0,
+                max_tokens=50
+            )
+            return completion.choices[0].message.content.strip()
+        except Exception as e:
+            logger.error(f"Vision Emotion Error: {e}")
+            return "Neutral"
 
-    async def get_audio_transcription(self, audio_bytes: bytes) -> str:
-        # Placeholder for Whisper
-        return ""
+    async def get_audio_transcription(self, file_path: str) -> str:
+        """Transcribe audio file using Groq Whisper model."""
+        try:
+            with open(file_path, "rb") as file:
+                transcription = self.client.audio.transcriptions.create(
+                    file=(file_path, file.read()),
+                    model="whisper-large-v3",
+                    response_format="json",
+                )
+            return transcription.text
+        except Exception as e:
+            logger.error(f"Transcription Error: {e}")
+            return ""
 
 ai_service = GroqService()

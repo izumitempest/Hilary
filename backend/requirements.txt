@@ -13,3 +13,4 @@ librosa
 soundfile
 pillow
 psycopg2-binary
+numpy

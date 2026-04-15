@@ -43,6 +43,6 @@ class AudioUtils:
         if features["tempo"] < 80 and features["energy"] < 0.01:
             return "Withdrawn/Low Energy"
         
-        return "Normal"
+        return "Neutral"
 
 audio_utils = AudioUtils()

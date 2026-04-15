@@ -1,7 +1,9 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const rawBase = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const BASE_URL = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
 
 export const apiClient = {
   async post(path, data, authenticated = true) {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -13,7 +15,7 @@ export const apiClient = {
       }
     }
 
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(`${BASE_URL}${cleanPath}`, {
       method: 'POST',
       headers,
       body: JSON.stringify(data),
@@ -37,7 +39,8 @@ export const apiClient = {
       }
     }
 
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const response = await fetch(`${BASE_URL}${cleanPath}`, {
       method: 'GET',
       headers,
     });

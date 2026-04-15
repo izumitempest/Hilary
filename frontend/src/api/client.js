@@ -1,84 +1,71 @@
 const rawBase = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 const BASE_URL = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase;
 
+async function handleResponse(response) {
+  const contentType = response.headers.get('content-type');
+  const isJson = contentType && contentType.includes('application/json');
+  
+  if (!response.ok) {
+    let message = `Server Error (${response.status})`;
+    if (isJson) {
+      const errorData = await response.json();
+      message = errorData.detail || message;
+    } else {
+      const text = await response.text();
+      message = text || message;
+    }
+    throw new Error(message);
+  }
+
+  if (response.status === 204) return null;
+  if (!isJson) {
+      const text = await response.text();
+      return text;
+  }
+  
+  return response.json();
+}
+
 export const apiClient = {
-  async post(path, data, authenticated = true) {
+  async request(path, options = {}) {
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const url = `${BASE_URL}${cleanPath}`;
+    
     const headers = {
       'Content-Type': 'application/json',
+      ...options.headers,
     };
 
-    if (authenticated) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+    const token = localStorage.getItem('token');
+    if (token && !options.noAuth) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${BASE_URL}${cleanPath}`, {
-      method: 'POST',
+    const response = await fetch(url, {
+      ...options,
       headers,
+    });
+
+    return handleResponse(response);
+  },
+
+  async get(path) {
+    return this.request(path, { method: 'GET' });
+  },
+
+  async post(path, data) {
+    return this.request(path, {
+      method: 'POST',
       body: JSON.stringify(data),
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Request failed');
-    }
-
-    return response.json();
-  },
-
-  async get(path, authenticated = true) {
-    const headers = {};
-
-    if (authenticated) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-    }
-
-    const cleanPath = path.startsWith('/') ? path : `/${path}`;
-    const response = await fetch(`${BASE_URL}${cleanPath}`, {
-      method: 'GET',
-      headers,
-    });
-
-    if (!response.ok) {
-      throw new Error('Request failed');
-    }
-
-    return response.json();
-  },
-
-  async clearHistory() {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${BASE_URL}/chat/history`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    if (!response.ok) throw new Error('Failed to clear history');
-    return response.json();
   },
 
   async register(username, email, password) {
-    const response = await fetch(`${BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password, full_name: username }),
+    return this.post('/auth/register', { 
+      full_name: username, 
+      email, 
+      password 
     });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.detail || 'Registration failed');
-    }
-
-    return response.json();
   },
 
   async login(email, password) {
@@ -94,33 +81,26 @@ export const apiClient = {
       body: formData.toString(),
     });
 
-    if (!response.ok) {
-      const text = await response.text();
-      let detail = 'Invalid credentials';
-      try {
-        const err = JSON.parse(text);
-        detail = err.detail || detail;
-      } catch (e) { /* fallback to default */ }
-      throw new Error(detail);
+    const data = await handleResponse(response);
+    if (data && data.access_token) {
+        localStorage.setItem('token', data.access_token);
+        // Try to get full user profile
+        try {
+            const user = await this.get('/auth/me');
+            return user;
+        } catch (e) {
+            return { email }; // Fallback
+        }
     }
+    return data;
+  },
 
-    const data = await response.json();
-    localStorage.setItem('token', data.access_token);
-    
-    // FETCH THE USER DATA IMMEDIATELY
-    const userResponse = await fetch(`${BASE_URL}/auth/me`, {
-      headers: { 'Authorization': `Bearer ${data.access_token}` }
-    });
-    
-    if (userResponse.ok) {
-        const userData = await userResponse.json();
-        return userData;
-    }
-    
-    return { email }; // Fallback
+  async delete(path) {
+    return this.request(path, { method: 'DELETE' });
   },
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 };

@@ -102,7 +102,12 @@ async def get_history(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
-    return current_user.messages
+    from sqlmodel import select
+    # Explicitly fetch to avoid relationship lazy-loading issues
+    messages = session.exec(
+        select(ChatMessage).where(ChatMessage.user_id == current_user.id)
+    ).all()
+    return messages
 
 @router.delete("/history")
 async def clear_history(

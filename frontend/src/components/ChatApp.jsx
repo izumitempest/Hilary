@@ -159,7 +159,7 @@ const ChatApp = ({ onLogout }) => {
                 <div className="loading-state">Establishing connection...</div>
               ) : (
                 messages.map((m, idx) => (
-                  <div key={idx} className={`chat-bubble ${m.role === 'user' ? 'user' : 'assistant'}`}>
+                  <div key={m.id || `msg-${idx}`} className={`chat-bubble ${m.role === 'user' ? 'user' : 'assistant'}`}>
                     {m.content}
                   </div>
                 ))

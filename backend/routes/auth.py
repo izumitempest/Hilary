@@ -54,7 +54,7 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
         print(f"CRITICAL REGISTRATION ERROR: {e}")
         raise HTTPException(
             status_code=500, 
-            detail="We encountered an issue creating your account. Our engineers have been notified."
+            detail=f"Registration Error: {str(e)}"
         )
 
 @router.get("/me", response_model=UserRead)

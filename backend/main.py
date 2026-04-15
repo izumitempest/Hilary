@@ -11,6 +11,7 @@ logger = logging.getLogger("hilary-backend")
 
 try:
     from .database import create_db_and_tables
+    from . import models
     from .routes import auth, behavior, chat, multimodal, dashboard
 except Exception as e:
     logger.error(f"CRITICAL IMPORT ERROR: {str(e)}")

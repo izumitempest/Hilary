@@ -1,9 +1,22 @@
 import os
+import sys
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import create_db_and_tables
-from .routes import auth, behavior, chat, multimodal, dashboard
 from dotenv import load_dotenv
+
+# Configure logging to catch startup errors
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("hilary-backend")
+
+try:
+    from .database import create_db_and_tables
+    from .routes import auth, behavior, chat, multimodal, dashboard
+except Exception as e:
+    logger.error(f"CRITICAL IMPORT ERROR: {str(e)}")
+    # If we are on Render, this logs to the console before the silent exit
+    print(f"FATAL: {e}", file=sys.stderr)
+    sys.exit(3)
 
 load_dotenv()
 

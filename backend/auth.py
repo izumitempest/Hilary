@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Optional
-import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
 
 # Configuration

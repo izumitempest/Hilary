@@ -9,17 +9,15 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-it-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 1 week
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Switched to Argon2: No 72-character limit and more secure
+# Keeping bcrypt for partial compatibility
+pwd_context = CryptContext(schemes=["argon2", "bcrypt"], deprecated="auto")
 
 def verify_password(plain_password, hashed_password):
-    # Bcrypt limit is 72 bytes. We truncate the raw bytes to be safe.
-    pw_bytes = plain_password.encode('utf-8')[:71]
-    return pwd_context.verify(pw_bytes, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):
-    # Truncate to 71 bytes (just under the 72 limit) to be 100% safe
-    pw_bytes = password.encode('utf-8')[:71]
-    return pwd_context.hash(pw_bytes)
+    return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

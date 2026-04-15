@@ -13,3 +13,4 @@ soundfile
 pillow
 psycopg2-binary
 numpy
+argon2-cffi

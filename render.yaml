@@ -25,4 +25,4 @@ services:
         fromService:
           type: web
           name: hilary-api
-          property: host
+          property: url

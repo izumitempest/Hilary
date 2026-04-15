@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+sqlmodel
+groq
+python-jose[cryptography]
+pyjwt
+passlib[bcrypt]
+python-multipart
+python-dotenv
+pytest
+httpx
+librosa
+soundfile
+pillow

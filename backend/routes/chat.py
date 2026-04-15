@@ -1,0 +1,115 @@
+from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Dict
+from sqlmodel import Session
+from ..database import get_session
+from ..models.user import User
+from .auth import get_current_user
+from ..services.ai_service import ai_service
+from ..services.emotion_engine import emotion_engine
+from pydantic import BaseModel
+from typing import List, Dict, Optional
+
+class ChatRequest(BaseModel):
+    messages: List[Dict[str, str]]
+    face_emotion: Optional[str] = None
+    voice_tone: Optional[str] = None
+    text_sentiment: float = 0.0
+
+router = APIRouter(prefix="/chat", tags=["Chat"])
+
+from ..models.chat import ChatMessage
+
+@router.post("/")
+async def chat(
+    request: ChatRequest, 
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    # 1. Get behavioral context
+    behaviors = current_user.behaviors
+    behavioral_state = emotion_engine.analyze_behavior(behaviors)
+    
+    # 2. Extract initial heuristic sentiment
+    text_sentiment = request.text_sentiment
+    if text_sentiment == 0.0 and request.messages:
+        last_msg = request.messages[-1].get("content", "").lower()
+        neg_words = ["sad", "depress", "kill", "die", "hurt", "pain", "anxious", "scared", "hate", "worthless", "empty", "lonely"]
+        pos_words = ["happy", "good", "great", "better", "excited", "love", "joy", "hope", "thanks", "calm"]
+        
+        score = 0.0
+        for w in neg_words:
+            if w in last_msg: score -= 0.6
+        for w in pos_words:
+            if w in last_msg: score += 0.4
+        if "kill myself" in last_msg or "hurt myself" in last_msg or "end it" in last_msg:
+            score -= 2.0
+            
+        text_sentiment = max(-1.0, min(1.0, score))
+
+    # 3. Perform Multi-modal Fusion (Preliminary)
+    preliminary_state = emotion_engine.multi_modal_fusion(
+        behavior_state=behavioral_state,
+        text_sentiment=text_sentiment,
+        face_emotion=request.face_emotion,
+        voice_tone=request.voice_tone
+    )
+    
+    # 4. Get response from Groq (Now returns JSON with sentiment)
+    # We pass the preliminary state to the AI, but it will refine it.
+    ai_data = await ai_service.get_therapist_response(request.messages, preliminary_state)
+    
+    # Use AI's detected sentiment as the source of truth if available
+    final_state = ai_data.get("detected_sentiment", preliminary_state)
+    ai_response = ai_data.get("response", "I'm listening.")
+    ai_insights = ai_data.get("insights", "")
+    
+    # 5. Persist Conversation
+    if request.messages:
+        last_user_msg = request.messages[-1]
+        user_msg_db = ChatMessage(
+            user_id=current_user.id,
+            role="user",
+            content=last_user_msg["content"],
+            emotional_state=final_state,
+            insights=None
+        )
+        session.add(user_msg_db)
+    
+    assistant_msg_db = ChatMessage(
+        user_id=current_user.id,
+        role="assistant",
+        content=ai_response,
+        emotional_state=final_state,
+        insights=ai_insights
+    )
+    session.add(assistant_msg_db)
+    
+    # 6. Proactive Alerts
+    from ..services.alert_service import alert_service
+    alert_service.trigger_alert(session, current_user.id, final_state)
+    
+    session.commit()
+    
+    return {
+        "response": ai_response,
+        "emotional_state": final_state,
+        "insights": ai_insights,
+        "intensity": ai_data.get("intensity", 5.0)
+    }
+
+@router.get("/history", response_model=List[ChatMessage])
+async def get_history(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    return current_user.messages
+
+@router.delete("/history")
+async def clear_history(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_session)
+):
+    for msg in current_user.messages:
+        session.delete(msg)
+    session.commit()
+    return {"status": "cleared"}

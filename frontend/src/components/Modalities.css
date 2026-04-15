@@ -1,0 +1,102 @@
+.modalities {
+  padding: 6rem 0;
+  background-color: var(--bg-surface);
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.mod-header {
+  margin-bottom: 4rem;
+}
+
+.mod-tag {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  letter-spacing: 1px;
+  margin-bottom: 2rem;
+}
+
+.mod-title {
+  font-size: 3.5rem;
+  line-height: 1.2;
+}
+
+.mod-title span {
+  font-style: italic;
+  color: var(--bg-dark-green);
+}
+
+.mod-tabs {
+  display: flex;
+  gap: 3rem;
+  border-bottom: 1px solid #EEEEEE;
+  margin-bottom: 4rem;
+}
+
+.tab {
+  padding-bottom: 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--text-light);
+  cursor: pointer;
+  position: relative;
+}
+
+.tab.active {
+  color: var(--bg-dark-green);
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--bg-dark-green);
+}
+
+.mod-content {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+}
+
+.mod-text {
+  flex: 1;
+}
+
+.mod-text h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.mod-visual {
+  flex: 1;
+  height: 400px;
+  background-color: #EFEFEF;
+}
+
+.visual-card {
+  height: 100%;
+  padding: 2rem;
+}
+
+.mock-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.m-line {
+  height: 4px;
+  background-color: #D3E4DE;
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .mod-content {
+    flex-direction: column;
+  }
+}

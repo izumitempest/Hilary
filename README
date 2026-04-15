@@ -1,0 +1,64 @@
+Software Requirements Specification (SRS)
+Project: AI Mental Health Support Application
+1. Overview
+AI-powered mobile app that provides mental health support through a conversational chatbot. System uses multi-modal inputs (text, voice, optional image, screen usage behavior) to detect user emotions and generate adaptive responses.
+2. Objectives
+- Provide real-time emotional support via chatbot
+- Detect user emotional state with high sensitivity (~80%)
+- Combine behavioral and conversational data for better accuracy
+3. Scope
+- Mobile application (Android/iOS)
+- Chat-based interaction (primary feature)
+- Optional voice and image input
+- Screen usage tracking (with user consent)
+- Emotion detection + adaptive response system
+4. Functional Requirements
+4.1 User Interaction
+- User can send text messages
+- User can use voice input (optional)
+- User can upload image (optional, not required)
+
+4.2 Chatbot System
+- Respond in therapist-like tone (empathetic, calm)
+- Maintain conversation context (session memory)
+- Generate dynamic responses based on emotional state
+
+4.3 Emotion Detection
+- Analyze: text, voice, image (optional), screen usage
+- Output: single emotional state score/label
+
+4.4 Screen Usage Tracking
+- Collect: screen time, app usage frequency, active hours
+- Use as contextual input
+
+4.5 Emotion Fusion Engine
+- Combine inputs into unified emotional state
+
+4.6 Dashboard
+- Display emotional trends and usage patterns
+
+4.7 Settings
+- Enable/disable features and privacy controls
+5. Non-Functional Requirements
+- Performance: real-time response (<2 seconds)
+- Usability: simple UI, chat-focused
+- Security: user consent, secure storage
+- Scalability: modular architecture
+6. System Architecture
+- Frontend: Flutter / React Native
+- Backend: FastAPI / Node.js
+- NLP: Transformers
+- Modules: chat, emotion detection, behavior tracking
+7. Assumptions
+- Works with text only
+- Image optional
+- Tracking requires consent
+8. Constraints
+- No required facial data
+- Privacy compliance
+- No clinical diagnosis
+9. Deliverables
+- Mobile app
+- Backend API
+- Emotion detection system
+- Dashboard

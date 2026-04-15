@@ -1,0 +1,8 @@
+{
+  "appId": "com.hilary.mindscape",
+  "appName": "MindScape",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

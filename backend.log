@@ -1,0 +1,76 @@
+/home/izumi/Documents/CODE/Hilary/backend/main.py:16: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+INFO:     Started server process [150599]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:58888 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58904 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58904 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47710 - "OPTIONS /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47710 - "POST /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47710 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57832 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57832 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57832 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57844 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57858 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57858 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55498 - "POST /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55498 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38902 - "POST /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38902 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35590 - "POST /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35590 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36782 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36782 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49322 - "POST /chat/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49322 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44844 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44854 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44864 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44864 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35022 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35022 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49330 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49330 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51166 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51180 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51180 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51166 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47198 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47198 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48678 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48682 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48692 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48692 - "GET /dashboard/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54200 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54202 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57366 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57372 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57372 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57366 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43456 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43470 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43456 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:43470 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38060 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38068 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37032 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37042 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37042 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37048 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47568 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47564 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [150599]

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MindScape</string>
+    <string name="title_activity_main">MindScape</string>
+    <string name="package_name">com.hilary.mindscape</string>
+    <string name="custom_url_scheme">com.hilary.mindscape</string>
+</resources>

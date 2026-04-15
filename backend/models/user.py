@@ -16,6 +16,7 @@ class User(UserBase, table=True):
     # Relationships
     behaviors: List["BehavioralData"] = Relationship(back_populates="user")
     messages: List["ChatMessage"] = Relationship(back_populates="user")
+    alerts: List["UserAlert"] = Relationship(back_populates="user")
 
 class UserCreate(UserBase):
     password: str

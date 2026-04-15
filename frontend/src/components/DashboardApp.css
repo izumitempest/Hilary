@@ -137,5 +137,17 @@
 @media (max-width: 768px) {
   .dashboard-content {
     padding: 30px 5%;
+    overflow-x: hidden;
+  }
+  .dash-header h2 {
+    font-size: 1.8rem;
+    word-break: break-word;
+  }
+  .big-stat {
+    font-size: 2rem;
+    word-break: break-word;
+  }
+  .dash-grid {
+    grid-template-columns: 1fr;
   }
 }

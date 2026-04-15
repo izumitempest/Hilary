@@ -1,76 +1,737 @@
-/home/izumi/Documents/CODE/Hilary/backend/main.py:16: DeprecationWarning: 
-        on_event is deprecated, use lifespan event handlers instead.
-
-        Read more about it in the
-        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
-        
-  @app.on_event("startup")
-INFO:     Started server process [150599]
+WARNING:backend.services.ai_service:GROQ_API_KEY not found in environment variables.
+INFO:     Started server process [521413]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:58888 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58904 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58914 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58904 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47710 - "OPTIONS /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47710 - "POST /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47710 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57832 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57832 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57832 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57844 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57858 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57858 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55498 - "POST /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:55498 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38902 - "POST /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38902 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35590 - "POST /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35590 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:36782 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:36782 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49322 - "POST /chat/ HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49322 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44844 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44854 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44864 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44864 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35022 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35022 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49330 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49330 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51166 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51180 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51180 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:51166 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47198 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47198 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48678 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48682 - "OPTIONS /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48692 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48692 - "GET /dashboard/summary HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54200 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54202 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57366 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57372 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57372 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:57366 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43456 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43470 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43456 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43470 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38060 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38068 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37032 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37042 - "OPTIONS /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37042 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37048 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47568 - "GET /chat/history HTTP/1.1" 200 OK
-INFO:     127.0.0.1:47564 - "GET /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37376 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37378 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37378 - "GET /chat/history HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 457, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 678, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 24, in get_current_user
+    user = session.exec(select(User).where(User.email == email)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:37376 - "GET /chat/history HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 457, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 678, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 24, in get_current_user
+    user = session.exec(select(User).where(User.email == email)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:37388 - "GET /chat/history HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 457, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 678, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 24, in get_current_user
+    user = session.exec(select(User).where(User.email == email)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:37400 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37400 - "OPTIONS /chat/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:37414 - "GET /chat/history HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 457, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 678, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 24, in get_current_user
+    user = session.exec(select(User).where(User.email == email)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:37400 - "GET /chat/history HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 457, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 678, in solve_dependencies
+    solved = await call(**solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 24, in get_current_user
+    user = session.exec(select(User).where(User.email == email)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:47804 - "POST /auth/login HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 66, in login
+    user = session.exec(select(User).where(User.email == form_data.username)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+INFO:     127.0.0.1:57506 - "POST /auth/login HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such column: user.is_verified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/fastapi/routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/backend/routes/auth.py", line 66, in login
+    user = session.exec(select(User).where(User.email == form_data.username)).first()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlmodel/orm/session.py", line 75, in exec
+    results = super().execute(
+              ^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/home/izumi/Documents/CODE/Hilary/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such column: user.is_verified
+[SQL: SELECT user.email, user.full_name, user.is_active, user.is_verified, user.id, user.hashed_password, user.created_at 
+FROM user 
+WHERE user.email = ?]
+[parameters: ('lilice308@gmail.com',)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [150599]
+INFO:     Finished server process [521413]

@@ -11,6 +11,7 @@ const ChatApp = ({ onLogout }) => {
   const [sending, setSending] = useState(false);
   const [currentState, setCurrentState] = useState('Neutral');
   const [view, setView] = useState('chat'); // 'chat' or 'dashboard'
+  const [showCrisisModal, setShowCrisisModal] = useState(false);
 
   useEffect(() => {
     loadHistory();
@@ -64,6 +65,9 @@ const ChatApp = ({ onLogout }) => {
       const response = await apiClient.post('/chat/', payload);
       setCurrentState(response.emotional_state);
       await loadHistory();
+      if (response.emotional_state === 'Critical Distress') {
+          setShowCrisisModal(true);
+      }
     } catch (e) {
       console.error(e);
       alert('Failed to send message');
@@ -180,6 +184,36 @@ const ChatApp = ({ onLogout }) => {
           <DashboardApp />
         )}
       </div>
+
+      {showCrisisModal && (
+        <div className="crisis-overlay animate-fade-in" style={{
+            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
+            backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 2000, display: 'flex', 
+            alignItems: 'center', justifyContent: 'center', padding: '20px'
+        }}>
+          <div className="auth-card" style={{ maxWidth: '500px', textAlign: 'center' }}>
+            <h2 style={{ fontFamily: 'Playfair Display', color: '#D32F2F', marginBottom: '15px' }}>We're here for you.</h2>
+            <p style={{ color: 'var(--text-light)', marginBottom: '25px', lineHeight: '1.6' }}>
+              Your safety is our absolute priority. It sounds like you're going through an incredibly difficult time right now. Please consider reaching out to one of these free, confidential resources:
+            </p>
+            
+            <div style={{ textAlign: 'left', marginBottom: '30px' }}>
+                <div style={{ marginBottom: '15px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                    <strong style={{color: '#fff'}}>National Suicide and Crisis Lifeline</strong><br/>
+                    <small style={{ color: '#ff6b6b' }}>Call or Text 988 (Available 24/7)</small>
+                </div>
+                <div style={{ padding: '15px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                    <strong style={{color: '#fff'}}>Crisis Text Line</strong><br/>
+                    <small style={{ color: '#ff6b6b' }}>Text HOME to 741741</small>
+                </div>
+            </div>
+
+            <button onClick={() => setShowCrisisModal(false)} className="btn auth-btn" style={{ backgroundColor: '#D32F2F', border: 'none' }}>
+                I'M SAFE NOW, CONTINUE SESSION
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,6 +12,8 @@ const ChatApp = ({ onLogout }) => {
   const [currentState, setCurrentState] = useState('Neutral');
   const [view, setView] = useState('chat'); // 'chat' or 'dashboard'
   const [showCrisisModal, setShowCrisisModal] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     loadHistory();
@@ -54,14 +56,28 @@ const ChatApp = ({ onLogout }) => {
     setSending(true);
 
     try {
-      const newMsg = { role: 'user', content: userContent };
+      let image_b64 = null;
+      if (imageFile) {
+        const reader = new FileReader();
+        image_b64 = await new Promise((resolve) => {
+          reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
+      const newMsg = { role: 'user', content: userContent, image_preview: imagePreview };
       setMessages(prev => [...prev, newMsg]);
 
       // Construct payload with context
       const contextMessages = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
-      contextMessages.push(newMsg);
+      contextMessages.push({ role: 'user', content: userContent });
 
-      const payload = { messages: contextMessages, text_sentiment: 0.0 };
+      const payload = { messages: contextMessages, text_sentiment: 0.0, image_b64 };
+      
+      // Clear image input
+      setImageFile(null);
+      setImagePreview(null);
+
       const response = await apiClient.post('/chat/', payload);
       setCurrentState(response.emotional_state);
       await loadHistory();
@@ -160,6 +176,7 @@ const ChatApp = ({ onLogout }) => {
               ) : (
                 messages.map((m, idx) => (
                   <div key={m.id || `msg-${idx}`} className={`chat-bubble ${m.role === 'user' ? 'user' : 'assistant'}`}>
+                    {m.image_preview && <img src={m.image_preview} alt="Upload preview" style={{maxWidth: '100%', borderRadius: '12px', marginBottom: '10px', display: 'block'}} />}
                     {m.content}
                   </div>
                 ))
@@ -167,18 +184,36 @@ const ChatApp = ({ onLogout }) => {
               {sending && <div className="chat-bubble assistant typing">Thinking...</div>}
             </div>
             
-            <form onSubmit={handleSend} className="chat-input-area">
-              <input 
-                type="text" 
-                value={input} 
-                onChange={(e) => setInput(e.target.value)} 
-                placeholder="Type your thoughts here..." 
-                disabled={sending}
-              />
-              <button type="submit" className="send-btn" disabled={sending}>
-                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-              </button>
-            </form>
+            <div className="chat-input-wrapper">
+              {imagePreview && (
+                <div className="image-preview-container" style={{ position: 'relative', display: 'inline-block', marginBottom: '10px' }}>
+                  <img src={imagePreview} alt="Preview" style={{ height: '60px', borderRadius: '8px' }} />
+                  <button onClick={() => { setImageFile(null); setImagePreview(null); }} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', borderRadius: '50%', width: '20px', height: '20px', border: 'none', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
+                </div>
+              )}
+              <form onSubmit={handleSend} className="chat-input-area">
+                <label className="image-upload-btn" style={{ cursor: 'pointer', color: 'var(--bg-dark-green)', display: 'flex', alignItems: 'center', padding: '10px' }}>
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <input type="file" accept="image/*" onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setImageFile(file);
+                      setImagePreview(URL.createObjectURL(file));
+                    }
+                  }} style={{ display: 'none' }} />
+                </label>
+                <input 
+                  type="text" 
+                  value={input} 
+                  onChange={(e) => setInput(e.target.value)} 
+                  placeholder="Type your thoughts here..." 
+                  disabled={sending}
+                />
+                <button type="submit" className="send-btn" disabled={sending}>
+                  <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+              </form>
+            </div>
           </>
         ) : (
           <DashboardApp />

@@ -3,6 +3,16 @@ import json
 import logging
 from groq import Groq
 from typing import List, Dict
+import base64
+from io import BytesIO
+from PIL import Image
+
+try:
+    import torch
+    import torchvision.transforms as transforms
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -18,6 +28,35 @@ class GroqService:
         self.client = Groq(api_key=self.api_key)
         # Use a highly capable model for therapeutic reasoning
         self.model = "llama-3.3-70b-versatile"
+        
+        # Load custom PyTorch model for visual sentiment analysis
+        self.custom_vision_model = None
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu") if TORCH_AVAILABLE else None
+        
+        if TORCH_AVAILABLE:
+            try:
+                # Assuming the model is in the project root
+                model_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "mental_health_image_model.pt")
+                if os.path.exists(model_path):
+                    logger.info(f"Loading custom mental health image model from {model_path}...")
+                    self.custom_vision_model = torch.load(model_path, map_location=self.device)
+                    # We might need to set it to eval mode if it's a module
+                    if hasattr(self.custom_vision_model, 'eval'):
+                        self.custom_vision_model.eval()
+                    logger.info("Custom model loaded successfully.")
+                else:
+                    logger.warning(f"Custom model not found at {model_path}")
+            except Exception as e:
+                logger.error(f"Failed to load custom model: {e}")
+                
+        # Define standard transforms for Image models (like ResNet)
+        if TORCH_AVAILABLE:
+            self.transform = transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+            ])
 
     async def get_therapist_response(self, messages: List[Dict[str, str]], current_state: str) -> Dict:
         """
@@ -85,7 +124,41 @@ class GroqService:
             }
 
     async def get_vision_emotion(self, image_b64: str) -> str:
-        """Analyze base64 image using Groq Vision model."""
+        """Analyze base64 image using custom PyTorch model or fallback to Groq Vision model."""
+        if self.custom_vision_model and TORCH_AVAILABLE:
+            try:
+                # Decode base64 and process
+                image_data = base64.b64decode(image_b64)
+                image = Image.open(BytesIO(image_data)).convert('RGB')
+                
+                # Prepare tensor
+                input_tensor = self.transform(image).unsqueeze(0).to(self.device)
+                
+                # Run inference
+                with torch.no_grad():
+                    output = self.custom_vision_model(input_tensor)
+                    
+                # Assuming standard output where index maps to emotion
+                # We'll map the top prediction to a sentiment string
+                emotions = ["Happy", "Sad", "Anxious", "Neutral", "Angry", "Surprised"]
+                
+                # Get the index of max log-probability
+                if hasattr(output, 'logits'):
+                    pred = output.logits.argmax(dim=1, keepdim=True)
+                else:
+                    pred = output.argmax(dim=1, keepdim=True)
+                    
+                idx = pred.item()
+                detected = emotions[idx] if idx < len(emotions) else "Neutral"
+                
+                logger.info(f"Custom model detected emotion: {detected}")
+                return detected
+                
+            except Exception as e:
+                logger.error(f"Custom Vision Model Error: {e}")
+                logger.info("Falling back to Groq Vision model...")
+                
+        # Fallback to Groq Vision
         try:
             completion = self.client.chat.completions.create(
                 model="llama-3.2-11b-vision-preview",
@@ -108,7 +181,7 @@ class GroqService:
             )
             return completion.choices[0].message.content.strip()
         except Exception as e:
-            logger.error(f"Vision Emotion Error: {e}")
+            logger.error(f"Groq Vision Emotion Error: {e}")
             return "Neutral"
 
     async def get_audio_transcription(self, file_path: str) -> str:

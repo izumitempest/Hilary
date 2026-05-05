@@ -1,6 +1,9 @@
+from datetime import datetime, timezone
 from typing import Optional, List
 from sqlmodel import SQLModel, Field, Relationship
-from datetime import datetime, timezone
+from .behavior import BehavioralData
+from .chat import ChatMessage
+from .alert import UserAlert
 
 class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)

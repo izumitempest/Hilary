@@ -14,6 +14,7 @@ class ChatRequest(BaseModel):
     face_emotion: Optional[str] = None
     voice_tone: Optional[str] = None
     text_sentiment: float = 0.0
+    image_b64: Optional[str] = None
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
@@ -46,11 +47,16 @@ async def chat(
             
         text_sentiment = max(-1.0, min(1.0, score))
 
-    # 3. Perform Multi-modal Fusion (Preliminary)
+    # 3. Process Vision Modality if image provided
+    face_emotion = request.face_emotion
+    if request.image_b64:
+        face_emotion = await ai_service.get_vision_emotion(request.image_b64)
+
+    # 4. Perform Multi-modal Fusion (Preliminary)
     preliminary_state = emotion_engine.multi_modal_fusion(
         behavior_state=behavioral_state,
         text_sentiment=text_sentiment,
-        face_emotion=request.face_emotion,
+        face_emotion=face_emotion,
         voice_tone=request.voice_tone
     )
     

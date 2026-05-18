@@ -60,6 +60,22 @@ export const apiClient = {
     });
   },
 
+  async postForm(path, formData) {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const url = `${BASE_URL}${cleanPath}`;
+    const headers = {};
+    const token = localStorage.getItem('token');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+    return handleResponse(response);
+  },
+
   async register(username, email, password) {
     return this.post('/auth/register', { 
       full_name: username, 

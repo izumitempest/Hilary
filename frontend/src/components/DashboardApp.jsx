@@ -36,7 +36,7 @@ const DashboardApp = () => {
         <div className="dash-card">
           <h4>Active Modality</h4>
           <div className="big-stat">{data.last_detected_state || 'Neutral'}</div>
-          <p>Text Sentiment</p>
+          <p>Fused multimodal state</p>
         </div>
         <div className="dash-card">
           <h4>Behavior Profile</h4>

@@ -6,8 +6,12 @@ import CTA from './components/CTA';
 import Footer from './components/Footer';
 import Auth from './components/Auth';
 import ChatApp from './components/ChatApp';
+import LandingSections from './components/LandingSections';
 
 function App() {
+  const scrollToModalities = () => {
+    document.getElementById('modalities')?.scrollIntoView({ behavior: 'smooth' });
+  };
   const [showAuth, setShowAuth] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
@@ -33,8 +37,7 @@ function App() {
     if (!isAuthenticated || !user || user.is_verified) return null;
     return (
       <div className="verification-banner">
-        <span>Please check your inbox ({user.email}) to verify your account and unlock all features.</span>
-        <button className="resend-link">Resend link</button>
+        <span>Please check your inbox ({user.email}) to verify your account.</span>
       </div>
     );
   };
@@ -57,9 +60,10 @@ function App() {
     <>
       <Header onLoginClick={() => setShowAuth(true)} />
       <main>
-        <Hero onLoginClick={() => setShowAuth(true)} />
+        <Hero onLoginClick={() => setShowAuth(true)} onViewModalities={scrollToModalities} />
         <Modalities />
-        <CTA onLoginClick={() => setShowAuth(true)} />
+        <LandingSections />
+        <CTA onLoginClick={() => setShowAuth(true)} onViewModalities={scrollToModalities} />
       </main>
       <Footer />
       
@@ -86,20 +90,6 @@ function App() {
           top: 0;
           z-index: 1100;
           animation: slideDown 0.3s ease-out;
-        }
-        .resend-link {
-          background: #856404;
-          color: white;
-          border: none;
-          padding: 4px 12px;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          cursor: pointer;
-          font-weight: 700;
-          transition: 0.2s;
-        }
-        .resend-link:hover {
-          background: #5d4603;
         }
         @keyframes slideDown {
           from { transform: translateY(-100%); }

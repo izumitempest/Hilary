@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
-from typing import Optional, List
+from typing import Optional, List, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship
-from .behavior import BehavioralData
-from .chat import ChatMessage
-from .alert import UserAlert
+
+if TYPE_CHECKING:
+    from .behavior import BehavioralData
+    from .chat import ChatMessage
+    from .alert import UserAlert
 
 class UserBase(SQLModel):
     email: str = Field(unique=True, index=True)

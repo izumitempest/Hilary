@@ -2,7 +2,8 @@ import os
 import json
 import logging
 from groq import Groq
-from typing import List, Dict
+from typing import List, Dict, Optional
+from .emotion_engine import EmotionEngine
 import base64
 from io import BytesIO
 from PIL import Image
@@ -58,7 +59,12 @@ class GroqService:
                 transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ])
 
-    async def get_therapist_response(self, messages: List[Dict[str, str]], current_state: str) -> Dict:
+    async def get_therapist_response(
+        self,
+        messages: List[Dict[str, str]],
+        current_state: str,
+        face_emotion: Optional[str] = None,
+    ) -> Dict:
         """
         Queries the Groq API to get a therapeutic response and sentiment analysis.
         Returns a dictionary with keys: response, detected_sentiment, intensity, insights.
@@ -69,6 +75,7 @@ class GroqService:
 
         USER CONTEXT:
         The current detected emotional state is: "{current_state}".
+        {f'Facial expression analysis from the user photo: "{face_emotion}". Factor this into your assessment.' if face_emotion else ''}
 
         INSTRUCTIONS:
         1. Respond with warmth and empathy.
@@ -150,7 +157,7 @@ class GroqService:
                     
                 idx = pred.item()
                 detected = emotions[idx] if idx < len(emotions) else "Neutral"
-                
+                detected = EmotionEngine.normalize_face_emotion(detected) or "Neutral"
                 logger.info(f"Custom model detected emotion: {detected}")
                 return detected
                 
@@ -179,7 +186,8 @@ class GroqService:
                 temperature=0,
                 max_tokens=50
             )
-            return completion.choices[0].message.content.strip()
+            raw = completion.choices[0].message.content.strip()
+            return EmotionEngine.normalize_face_emotion(raw) or "Neutral"
         except Exception as e:
             logger.error(f"Groq Vision Emotion Error: {e}")
             return "Neutral"

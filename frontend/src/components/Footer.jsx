@@ -7,8 +7,8 @@ const Footer = () => {
         <div style={{ fontFamily: 'Playfair Display', fontSize: '1.25rem' }}>MindScape</div>
         
         <div style={{ display: 'flex', gap: '2rem', fontSize: '0.75rem', color: '#999' }}>
-          <a href="#">RESEARCH</a>
-          <a href="#">ETHICS</a>
+          <a href="#modalities">MODALITIES</a>
+          <a href="#privacy">PRIVACY</a>
         </div>
         
         <div style={{ fontSize: '0.75rem', color: '#666' }}>

@@ -3,6 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from typing import Optional
 from ..services.ai_service import ai_service
+from ..services.emotion_engine import emotion_engine
 from ..services.audio_utils import audio_utils
 from ..models.user import User
 from .auth import get_current_user
@@ -19,8 +20,10 @@ async def analyze_face(
     current_user: User = Depends(get_current_user)
 ):
     """Analyze face from base64 image and return detected emotion."""
-    emotion = await ai_service.get_vision_emotion(image_base64)
-    return {"emotion": emotion, "source": "face"}
+    raw = await ai_service.get_vision_emotion(image_base64)
+    emotion = emotion_engine.normalize_face_emotion(raw)
+    model_source = "pytorch" if ai_service.custom_vision_model else "groq-vision"
+    return {"emotion": emotion, "raw_emotion": raw, "source": "face", "model_source": model_source}
 
 @router.post("/voice")
 async def analyze_voice(

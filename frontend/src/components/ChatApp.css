@@ -269,6 +269,136 @@
   cursor: not-allowed;
 }
 
+.chat-image-preview {
+  max-width: 100%;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.chat-photo-placeholder {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.image-preview-container {
+  position: relative;
+  display: inline-block;
+  margin: 0 15% 10px;
+}
+
+.image-preview-thumb {
+  height: 60px;
+  border-radius: 8px;
+}
+
+.image-preview-remove {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #d32f2f;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.voice-tone-chip {
+  margin: 0 15% 8px;
+  font-size: 0.8rem;
+  color: var(--bg-dark-green);
+  font-weight: 600;
+}
+
+.voice-btn {
+  background: transparent;
+  border: none;
+  color: var(--bg-dark-green);
+  cursor: pointer;
+  padding: 10px;
+  flex-shrink: 0;
+}
+
+.voice-btn.recording {
+  color: #d32f2f;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.5; }
+}
+
+.vision-hint {
+  font-size: 0.7rem;
+  color: var(--text-light);
+  margin-top: 8px;
+  text-align: center;
+}
+
+.crisis-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.crisis-card {
+  max-width: 500px;
+  text-align: center;
+}
+
+.crisis-card h2 {
+  font-family: 'Playfair Display', serif;
+  color: #d32f2f;
+  margin-bottom: 15px;
+}
+
+.crisis-card > p {
+  color: var(--text-light);
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.crisis-resources {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.crisis-resource-item {
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.crisis-resource-item strong {
+  color: #fff;
+}
+
+.crisis-resource-item small {
+  color: #ff6b6b;
+}
+
+.crisis-continue-btn {
+  background-color: #d32f2f;
+  border: none;
+}
+
 @keyframes messageIn {
   from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }

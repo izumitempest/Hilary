@@ -1,7 +1,7 @@
 import React from 'react';
 import './Hero.css';
 
-const Hero = ({ onLoginClick }) => {
+const Hero = ({ onLoginClick, onViewModalities }) => {
   return (
     <section className="hero">
       <div className="container hero-container animate-fade-in" style={{ animationDelay: '0.2s' }}>
@@ -20,7 +20,14 @@ const Hero = ({ onLoginClick }) => {
           </p>
           <div className="hero-actions">
             <button className="btn desktop-hero-btn" onClick={onLoginClick}>EXPLORE THE SYSTEM</button>
-            <button className="btn btn-outline desktop-hero-btn" style={{ marginLeft: '15px' }}>VIEW MODALITIES</button>
+            <button
+              type="button"
+              className="btn btn-outline desktop-hero-btn"
+              style={{ marginLeft: '15px' }}
+              onClick={onViewModalities}
+            >
+              VIEW MODALITIES
+            </button>
           </div>
         </div>
         

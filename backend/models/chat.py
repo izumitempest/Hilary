@@ -1,7 +1,9 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime, timezone
-from .user import User
+
+if TYPE_CHECKING:
+    from .user import User
 
 class ChatMessage(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -13,4 +15,4 @@ class ChatMessage(SQLModel, table=True):
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     
     # Relationship
-    user: User = Relationship(back_populates="messages")
+    user: Optional["User"] = Relationship(back_populates="messages")

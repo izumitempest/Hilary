@@ -49,8 +49,15 @@ async def chat(
 
     # 3. Process Vision Modality if image provided
     face_emotion = request.face_emotion
+    vision_source = None
     if request.image_b64:
-        face_emotion = await ai_service.get_vision_emotion(request.image_b64)
+        raw_face = await ai_service.get_vision_emotion(request.image_b64)
+        face_emotion = emotion_engine.normalize_face_emotion(raw_face)
+        vision_source = (
+            "pytorch"
+            if ai_service.custom_vision_model
+            else "groq-vision"
+        )
 
     # 4. Perform Multi-modal Fusion (Preliminary)
     preliminary_state = emotion_engine.multi_modal_fusion(
@@ -60,22 +67,34 @@ async def chat(
         voice_tone=request.voice_tone
     )
     
-    # 4. Get response from Groq (Now returns JSON with sentiment)
-    # We pass the preliminary state to the AI, but it will refine it.
-    ai_data = await ai_service.get_therapist_response(request.messages, preliminary_state)
+    # 5. Get response from Groq (Now returns JSON with sentiment)
+    ai_data = await ai_service.get_therapist_response(
+        request.messages,
+        preliminary_state,
+        face_emotion=face_emotion,
+    )
     
-    # Use AI's detected sentiment as the source of truth if available
-    final_state = ai_data.get("detected_sentiment", preliminary_state)
+    final_state = emotion_engine.resolve_final_state(
+        preliminary_state,
+        ai_data.get("detected_sentiment"),
+        used_vision=bool(request.image_b64),
+    )
     ai_response = ai_data.get("response", "I'm listening.")
     ai_insights = ai_data.get("insights", "")
     
-    # 5. Persist Conversation
+    # 6. Persist Conversation
     if request.messages:
         last_user_msg = request.messages[-1]
+        content = (last_user_msg.get("content") or "").strip()
+        if request.image_b64:
+            if not content:
+                content = "[Photo shared for emotional analysis]"
+            elif "[Photo" not in content:
+                content = f"{content}\n[Photo attached]"
         user_msg_db = ChatMessage(
             user_id=current_user.id,
             role="user",
-            content=last_user_msg["content"],
+            content=content,
             emotional_state=final_state,
             insights=None
         )
@@ -100,7 +119,10 @@ async def chat(
         "response": ai_response,
         "emotional_state": final_state,
         "insights": ai_insights,
-        "intensity": ai_data.get("intensity", 5.0)
+        "intensity": ai_data.get("intensity", 5.0),
+        "face_emotion": face_emotion,
+        "vision_source": vision_source,
+        "preliminary_state": preliminary_state,
     }
 
 @router.get("/history", response_model=List[ChatMessage])

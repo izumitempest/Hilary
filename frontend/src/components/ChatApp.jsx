@@ -1,7 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { apiClient } from '../api/client';
 import DashboardApp from './DashboardApp';
 import './ChatApp.css';
+
+const IMAGE_PREVIEW_KEY = 'hilary_image_previews';
+
+const stripPhotoMarkers = (content) =>
+  (content || '')
+    .replace(/\n?\[Photo attached\]/g, '')
+    .replace(/\[Photo shared for emotional analysis\]/g, '')
+    .trim();
+
+const attachImagePreviews = (history) => {
+  let previews = {};
+  try {
+    previews = JSON.parse(sessionStorage.getItem(IMAGE_PREVIEW_KEY) || '{}');
+  } catch {
+    previews = {};
+  }
+  return (history || []).map((m) => {
+    const hasPhoto = m.content?.includes('[Photo');
+    return {
+      ...m,
+      image_preview: hasPhoto && m.id ? previews[String(m.id)] : null,
+      displayContent: stripPhotoMarkers(m.content) || (hasPhoto ? '' : m.content),
+    };
+  });
+};
 
 // eslint-disable-next-line react/prop-types
 const ChatApp = ({ onLogout }) => {
@@ -10,10 +35,16 @@ const ChatApp = ({ onLogout }) => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [currentState, setCurrentState] = useState('Neutral');
-  const [view, setView] = useState('chat'); // 'chat' or 'dashboard'
+  const [view, setView] = useState('chat');
   const [showCrisisModal, setShowCrisisModal] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [voiceTone, setVoiceTone] = useState(null);
+  const [recording, setRecording] = useState(false);
+  const [lastVision, setLastVision] = useState(null);
+  const pendingImagePreviewRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   useEffect(() => {
     loadHistory();
@@ -22,7 +53,7 @@ const ChatApp = ({ onLogout }) => {
   const loadHistory = async () => {
     try {
       const history = await apiClient.get('/chat/history');
-      setMessages(history || []);
+      setMessages(attachImagePreviews(history));
       if (history?.length > 0) {
         setCurrentState(history[history.length - 1].emotional_state || 'Neutral');
       }
@@ -33,6 +64,17 @@ const ChatApp = ({ onLogout }) => {
     }
   };
 
+  const saveImagePreviewForMessage = (messageId, previewUrl) => {
+    if (!messageId || !previewUrl) return;
+    try {
+      const previews = JSON.parse(sessionStorage.getItem(IMAGE_PREVIEW_KEY) || '{}');
+      previews[String(messageId)] = previewUrl;
+      sessionStorage.setItem(IMAGE_PREVIEW_KEY, JSON.stringify(previews));
+    } catch {
+      /* ignore quota errors */
+    }
+  };
+
   const handleNewSession = async () => {
     if (!window.confirm('Are you sure you want to start a new session? Current history will be cleared.')) return;
     try {
@@ -40,6 +82,9 @@ const ChatApp = ({ onLogout }) => {
       await apiClient.delete('/chat/history');
       setMessages([]);
       setCurrentState('Neutral');
+      setLastVision(null);
+      setVoiceTone(null);
+      sessionStorage.removeItem(IMAGE_PREVIEW_KEY);
     } catch (e) {
       console.error(e);
     } finally {
@@ -47,45 +92,120 @@ const ChatApp = ({ onLogout }) => {
     }
   };
 
+  const readImageAsBase64 = (file) =>
+    new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
+
+  const handleVoiceToggle = async () => {
+    if (recording) {
+      mediaRecorderRef.current?.stop();
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      audioChunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        setRecording(false);
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const formData = new FormData();
+        formData.append('audio_file', blob, 'voice.webm');
+        try {
+          const result = await apiClient.postForm('/analyze/voice', formData);
+          if (result.tone) setVoiceTone(result.tone);
+          if (result.transcript) {
+            setInput((prev) => (prev ? `${prev} ${result.transcript}` : result.transcript));
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Voice analysis failed. Check microphone permissions and try again.');
+        }
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setRecording(true);
+    } catch (err) {
+      console.error(err);
+      alert('Microphone access is required for voice analysis.');
+    }
+  };
+
   const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim() || sending) return;
+    const text = input.trim();
+    if ((!text && !imageFile) || sending) return;
 
-    const userContent = input;
+    const userContent = text || (imageFile ? 'Shared a photo for emotional analysis' : '');
+    const previewForMessage = imagePreview;
+    pendingImagePreviewRef.current = previewForMessage;
+
     setInput('');
     setSending(true);
 
     try {
       let image_b64 = null;
       if (imageFile) {
-        const reader = new FileReader();
-        image_b64 = await new Promise((resolve) => {
-          reader.onload = (e) => resolve(e.target.result.split(',')[1]);
-          reader.readAsDataURL(imageFile);
-        });
+        image_b64 = await readImageAsBase64(imageFile);
       }
 
-      const newMsg = { role: 'user', content: userContent, image_preview: imagePreview };
-      setMessages(prev => [...prev, newMsg]);
+      const newMsg = {
+        role: 'user',
+        content: userContent,
+        displayContent: userContent,
+        image_preview: previewForMessage,
+      };
+      setMessages((prev) => [...prev, newMsg]);
 
-      // Construct payload with context
-      const contextMessages = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+      const contextMessages = messages.slice(-10).map((m) => ({
+        role: m.role,
+        content: stripPhotoMarkers(m.content) || m.displayContent || m.content,
+      }));
       contextMessages.push({ role: 'user', content: userContent });
 
-      const payload = { messages: contextMessages, text_sentiment: 0.0, image_b64 };
-      
-      // Clear image input
+      const payload = {
+        messages: contextMessages,
+        text_sentiment: 0.0,
+        image_b64,
+        voice_tone: voiceTone,
+      };
+
       setImageFile(null);
       setImagePreview(null);
+      setVoiceTone(null);
 
       const response = await apiClient.post('/chat/', payload);
       setCurrentState(response.emotional_state);
-      await loadHistory();
-      if (response.emotional_state === 'Critical Distress') {
-          setShowCrisisModal(true);
+      if (response.face_emotion) {
+        setLastVision({
+          emotion: response.face_emotion,
+          source: response.vision_source || 'vision',
+        });
       }
-    } catch (e) {
-      console.error(e);
+
+      const history = await apiClient.get('/chat/history');
+      const withPreviews = attachImagePreviews(history);
+      if (pendingImagePreviewRef.current) {
+        const lastUser = [...withPreviews].reverse().find((m) => m.role === 'user');
+        if (lastUser?.id) {
+          saveImagePreviewForMessage(lastUser.id, pendingImagePreviewRef.current);
+          lastUser.image_preview = pendingImagePreviewRef.current;
+        }
+      }
+      setMessages(withPreviews);
+      pendingImagePreviewRef.current = null;
+
+      if (response.emotional_state === 'Critical Distress') {
+        setShowCrisisModal(true);
+      }
+    } catch (err) {
+      console.error(err);
       alert('Failed to send message');
     } finally {
       setSending(false);
@@ -93,36 +213,48 @@ const ChatApp = ({ onLogout }) => {
   };
 
   const getOrbColor = (state) => {
-    switch(state) {
-      case 'Critical Distress': return '#D32F2F';
-      case 'Distressed/Anxious': return '#FF9800';
-      case 'Positive/Happy': return '#4CAF50';
-      case 'Calm/Content': return '#2D5A4C';
-      default: return '#A890D3';
+    switch (state) {
+      case 'Critical Distress':
+        return '#D32F2F';
+      case 'Distressed/Anxious':
+        return '#FF9800';
+      case 'Positive/Happy':
+        return '#4CAF50';
+      case 'Calm/Content':
+        return '#2D5A4C';
+      default:
+        return '#A890D3';
     }
   };
 
+  const canSend = (input.trim() || imageFile) && !sending;
+
   return (
     <div className="chat-layout animate-fade-in">
-      {/* Sidebar for Desktop */}
       <div className="chat-sidebar">
         <div className="sidebar-logo">MindScape</div>
-        
+
         <div className="sidebar-nav">
-          <button onClick={handleNewSession} className="new-chat-btn">
+          <button onClick={handleNewSession} className="new-chat-btn" type="button">
             <span>+</span> New Session
           </button>
-          
+
           <div className="nav-links">
-            <div 
-              className={`nav-item ${view === 'chat' ? 'active' : ''}`} 
+            <div
+              className={`nav-item ${view === 'chat' ? 'active' : ''}`}
               onClick={() => setView('chat')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && setView('chat')}
             >
               Therapy Session
             </div>
-            <div 
-              className={`nav-item ${view === 'dashboard' ? 'active' : ''}`} 
+            <div
+              className={`nav-item ${view === 'dashboard' ? 'active' : ''}`}
               onClick={() => setView('dashboard')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && setView('dashboard')}
             >
               Mental Health Insights
             </div>
@@ -134,39 +266,69 @@ const ChatApp = ({ onLogout }) => {
             {currentState}
           </div>
           <p className="status-label">CURRENT STATE</p>
+          {lastVision && (
+            <p className="vision-hint">
+              Face: {lastVision.emotion} ({lastVision.source})
+            </p>
+          )}
         </div>
-        
+
         <div className="sidebar-footer">
-          <button onClick={() => { apiClient.logout(); onLogout(); }} className="logout-btn-text">Log Out</button>
+          <button
+            type="button"
+            onClick={() => {
+              apiClient.logout();
+              onLogout();
+            }}
+            className="logout-btn-text"
+          >
+            Log Out
+          </button>
         </div>
       </div>
 
-      {/* Header and Bottom Nav for Mobile */}
       <div className="mobile-only mobile-header">
         <div className="logo-small">MindScape</div>
-        <button onClick={() => { apiClient.logout(); onLogout(); }} className="mobile-logout">
+        <button
+          type="button"
+          onClick={() => {
+            apiClient.logout();
+            onLogout();
+          }}
+          className="mobile-logout"
+        >
           Logout
         </button>
       </div>
-      
+
       <div className="mobile-only mobile-tabs">
-        <div 
-          className={`tab-item ${view === 'chat' ? 'active' : ''}`} 
+        <div
+          className={`tab-item ${view === 'chat' ? 'active' : ''}`}
           onClick={() => setView('chat')}
+          role="button"
+          tabIndex={0}
         >
           Session
         </div>
-        <div 
-          className={`tab-item ${view === 'dashboard' ? 'active' : ''}`} 
+        <div
+          className={`tab-item ${view === 'dashboard' ? 'active' : ''}`}
           onClick={() => setView('dashboard')}
+          role="button"
+          tabIndex={0}
         >
           Insights
         </div>
-        <div className="tab-item" onClick={handleNewSession} style={{ color: 'var(--bg-dark-green)' }}>
+        <div
+          className="tab-item"
+          onClick={handleNewSession}
+          style={{ color: 'var(--bg-dark-green)' }}
+          role="button"
+          tabIndex={0}
+        >
           Reset
         </div>
       </div>
-      
+
       <div className="chat-main">
         {view === 'chat' ? (
           <>
@@ -176,41 +338,89 @@ const ChatApp = ({ onLogout }) => {
               ) : (
                 messages.map((m, idx) => (
                   <div key={m.id || `msg-${idx}`} className={`chat-bubble ${m.role === 'user' ? 'user' : 'assistant'}`}>
-                    {m.image_preview && <img src={m.image_preview} alt="Upload preview" style={{maxWidth: '100%', borderRadius: '12px', marginBottom: '10px', display: 'block'}} />}
-                    {m.content}
+                    {m.image_preview && (
+                      <img
+                        src={m.image_preview}
+                        alt="Shared"
+                        className="chat-image-preview"
+                      />
+                    )}
+                    {!m.image_preview && m.content?.includes('[Photo') && (
+                      <div className="chat-photo-placeholder">Photo analyzed</div>
+                    )}
+                    {(m.displayContent ?? stripPhotoMarkers(m.content)) && (
+                      <span>{m.displayContent ?? stripPhotoMarkers(m.content)}</span>
+                    )}
                   </div>
                 ))
               )}
-              {sending && <div className="chat-bubble assistant typing">Thinking...</div>}
+              {sending && <div className="chat-bubble assistant typing">Analyzing & thinking...</div>}
             </div>
-            
+
             <div className="chat-input-wrapper">
               {imagePreview && (
-                <div className="image-preview-container" style={{ position: 'relative', display: 'inline-block', marginBottom: '10px' }}>
-                  <img src={imagePreview} alt="Preview" style={{ height: '60px', borderRadius: '8px' }} />
-                  <button onClick={() => { setImageFile(null); setImagePreview(null); }} style={{ position: 'absolute', top: '-5px', right: '-5px', background: 'red', color: 'white', borderRadius: '50%', width: '20px', height: '20px', border: 'none', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>&times;</button>
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Preview" className="image-preview-thumb" />
+                  <button
+                    type="button"
+                    aria-label="Remove image"
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview(null);
+                    }}
+                    className="image-preview-remove"
+                  >
+                    &times;
+                  </button>
                 </div>
               )}
+              {voiceTone && (
+                <div className="voice-tone-chip">Voice tone: {voiceTone}</div>
+              )}
               <form onSubmit={handleSend} className="chat-input-area">
-                <label className="image-upload-btn" style={{ cursor: 'pointer', color: 'var(--bg-dark-green)', display: 'flex', alignItems: 'center', padding: '10px' }}>
-                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-                  <input type="file" accept="image/*" onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                      setImageFile(file);
-                      setImagePreview(URL.createObjectURL(file));
-                    }
-                  }} style={{ display: 'none' }} />
+                <label className="image-upload-btn" title="Attach photo for facial analysis">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setImageFile(file);
+                        setImagePreview(URL.createObjectURL(file));
+                      }
+                      e.target.value = '';
+                    }}
+                    style={{ display: 'none' }}
+                  />
                 </label>
-                <input 
-                  type="text" 
-                  value={input} 
-                  onChange={(e) => setInput(e.target.value)} 
-                  placeholder="Type your thoughts here..." 
+                <button
+                  type="button"
+                  className={`voice-btn ${recording ? 'recording' : ''}`}
+                  onClick={handleVoiceToggle}
+                  disabled={sending}
+                  title={recording ? 'Stop recording' : 'Record voice note'}
+                  aria-label={recording ? 'Stop recording' : 'Record voice'}
+                >
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+                    <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zm-5 9v2h3v2H9v-2h3v-2H7z" />
+                  </svg>
+                </button>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={imageFile ? 'Add a caption (optional)...' : 'Type your thoughts here...'}
                   disabled={sending}
                 />
-                <button type="submit" className="send-btn" disabled={sending}>
-                  <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                <button type="submit" className="send-btn" disabled={!canSend}>
+                  <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                  </svg>
                 </button>
               </form>
             </div>
@@ -221,30 +431,29 @@ const ChatApp = ({ onLogout }) => {
       </div>
 
       {showCrisisModal && (
-        <div className="crisis-overlay animate-fade-in" style={{
-            position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', 
-            backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 2000, display: 'flex', 
-            alignItems: 'center', justifyContent: 'center', padding: '20px'
-        }}>
-          <div className="auth-card" style={{ maxWidth: '500px', textAlign: 'center' }}>
-            <h2 style={{ fontFamily: 'Playfair Display', color: '#D32F2F', marginBottom: '15px' }}>We're here for you.</h2>
-            <p style={{ color: 'var(--text-light)', marginBottom: '25px', lineHeight: '1.6' }}>
-              Your safety is our absolute priority. It sounds like you're going through an incredibly difficult time right now. Please consider reaching out to one of these free, confidential resources:
+        <div className="crisis-overlay animate-fade-in">
+          <div className="auth-card crisis-card">
+            <h2>We&apos;re here for you.</h2>
+            <p>
+              Your safety is our absolute priority. It sounds like you&apos;re going through an incredibly difficult
+              time right now. Please consider reaching out to one of these free, confidential resources:
             </p>
-            
-            <div style={{ textAlign: 'left', marginBottom: '30px' }}>
-                <div style={{ marginBottom: '15px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-                    <strong style={{color: '#fff'}}>National Suicide and Crisis Lifeline</strong><br/>
-                    <small style={{ color: '#ff6b6b' }}>Call or Text 988 (Available 24/7)</small>
-                </div>
-                <div style={{ padding: '15px', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-                    <strong style={{color: '#fff'}}>Crisis Text Line</strong><br/>
-                    <small style={{ color: '#ff6b6b' }}>Text HOME to 741741</small>
-                </div>
+
+            <div className="crisis-resources">
+              <div className="crisis-resource-item">
+                <strong>National Suicide and Crisis Lifeline</strong>
+                <br />
+                <small>Call or Text 988 (Available 24/7)</small>
+              </div>
+              <div className="crisis-resource-item">
+                <strong>Crisis Text Line</strong>
+                <br />
+                <small>Text HOME to 741741</small>
+              </div>
             </div>
 
-            <button onClick={() => setShowCrisisModal(false)} className="btn auth-btn" style={{ backgroundColor: '#D32F2F', border: 'none' }}>
-                I'M SAFE NOW, CONTINUE SESSION
+            <button type="button" onClick={() => setShowCrisisModal(false)} className="btn auth-btn crisis-continue-btn">
+              I&apos;M SAFE NOW, CONTINUE SESSION
             </button>
           </div>
         </div>

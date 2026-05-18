@@ -1,8 +1,61 @@
+import re
 from typing import List, Dict, Any, Optional
 from ..models.behavior import BehavioralData
 
+STATE_SEVERITY = {
+    "Critical Distress": 0,
+    "Distressed/Anxious": 1,
+    "Neutral": 2,
+    "Calm/Content": 3,
+    "Positive/Happy": 4,
+}
+
 
 class EmotionEngine:
+    @staticmethod
+    def normalize_face_emotion(raw: Optional[str]) -> Optional[str]:
+        if not raw:
+            return None
+        key = re.sub(r"[^a-z]", "", raw.lower())
+        mapping = {
+            "happy": "Happy",
+            "joy": "Happy",
+            "sad": "Sad",
+            "sorrow": "Sad",
+            "anxious": "Anxious",
+            "anxiety": "Anxious",
+            "worried": "Anxious",
+            "fear": "Anxious",
+            "neutral": "Neutral",
+            "calm": "Neutral",
+            "angry": "Angry",
+            "anger": "Angry",
+            "surprised": "Surprised",
+            "surprise": "Surprised",
+        }
+        for fragment, label in mapping.items():
+            if fragment in key:
+                return label
+        return "Neutral"
+
+    @staticmethod
+    def resolve_final_state(
+        preliminary: str,
+        ai_detected: Optional[str],
+        *,
+        used_vision: bool = False,
+    ) -> str:
+        ai_state = ai_detected or preliminary
+        if not used_vision:
+            return ai_state
+        pre_score = STATE_SEVERITY.get(preliminary, 2)
+        ai_score = STATE_SEVERITY.get(ai_state, 2)
+        chosen = min(pre_score, ai_score)
+        for label, score in STATE_SEVERITY.items():
+            if score == chosen:
+                return label
+        return preliminary
+
     @staticmethod
     def analyze_behavior(data: List[BehavioralData]) -> str:
         if not data:
@@ -55,10 +108,12 @@ class EmotionEngine:
             "Neutral": 0.0,
             "Happy": 0.8,
             "Sad": -0.6,
+            "Anxious": -0.65,
             "Angry": -0.8,
+            "Surprised": -0.15,
             "Excited": 0.7,
-            "Agitated/Excited": -0.5, # Often negative in therapy context
-            "Withdrawn/Low Energy": -0.4
+            "Agitated/Excited": -0.5,
+            "Withdrawn/Low Energy": -0.4,
         }
         
         # Initial weights
@@ -75,7 +130,8 @@ class EmotionEngine:
         
         # Add face influence
         if face_emotion:
-            score += label_map.get(face_emotion, 0.0) * w_face
+            normalized_face = EmotionEngine.normalize_face_emotion(face_emotion)
+            score += label_map.get(normalized_face or "Neutral", 0.0) * w_face
             
         # Add voice influence
         if voice_tone:

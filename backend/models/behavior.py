@@ -1,7 +1,9 @@
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship, JSON
 from datetime import datetime, timezone
-from .user import User
+
+if TYPE_CHECKING:
+    from .user import User
 
 class BehavioralData(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -17,7 +19,7 @@ class BehavioralData(SQLModel, table=True):
     inferred_mood: Optional[str] = None
     mood_confidence: Optional[float] = None
     
-    user: User = Relationship(back_populates="behaviors")
+    user: Optional["User"] = Relationship(back_populates="behaviors")
 
 class BehavioralDataCreate(SQLModel):
     screen_time_seconds: int

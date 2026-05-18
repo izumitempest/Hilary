@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CTA = ({ onLoginClick }) => {
+const CTA = ({ onLoginClick, onViewModalities }) => {
   return (
     <>
       <div style={{ height: '80px', backgroundColor: 'var(--bg-dark-green)', width: '100%' }}></div>
@@ -15,7 +15,14 @@ const CTA = ({ onLoginClick }) => {
           </h2>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
             <button className="btn" style={{ backgroundColor: 'var(--bg-dark-green)' }} onClick={onLoginClick}>REQUEST EARLY ACCESS</button>
-            <button className="btn btn-outline" style={{ backgroundColor: 'var(--bg-surface)' }}>READ THE RESEARCH</button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              style={{ backgroundColor: 'var(--bg-surface)' }}
+              onClick={onViewModalities}
+            >
+              EXPLORE MODALITIES
+            </button>
           </div>
         </div>
       </section>

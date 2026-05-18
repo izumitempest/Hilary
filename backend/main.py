@@ -35,10 +35,26 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration
+def _cors_origins() -> list[str]:
+    """Explicit origins required when allow_credentials=True (wildcard is invalid)."""
+    defaults = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://hilary-frontend.onrender.com",
+    ]
+    extra = os.getenv("CORS_ORIGINS", os.getenv("FRONTEND_URL", ""))
+    if extra:
+        for origin in extra.split(","):
+            origin = origin.strip().rstrip("/")
+            if origin and origin not in defaults:
+                defaults.append(origin)
+    return defaults
+
+
+# JWT is sent via Authorization header (not cookies); explicit origins fix Render CORS.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Set this to your frontend URL in production
+    allow_origins=_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

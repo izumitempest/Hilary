@@ -11,6 +11,8 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
+      - key: CORS_ORIGINS
+        value: https://hilary-frontend.onrender.com
       - key: PYTHON_VERSION
         value: 3.10.0
 

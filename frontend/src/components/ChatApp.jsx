@@ -39,12 +39,8 @@ const ChatApp = ({ onLogout }) => {
   const [showCrisisModal, setShowCrisisModal] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [voiceTone, setVoiceTone] = useState(null);
-  const [recording, setRecording] = useState(false);
   const [lastVision, setLastVision] = useState(null);
   const pendingImagePreviewRef = useRef(null);
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
 
   useEffect(() => {
     loadHistory();
@@ -83,7 +79,6 @@ const ChatApp = ({ onLogout }) => {
       setMessages([]);
       setCurrentState('Neutral');
       setLastVision(null);
-      setVoiceTone(null);
       sessionStorage.removeItem(IMAGE_PREVIEW_KEY);
     } catch (e) {
       console.error(e);
@@ -98,44 +93,6 @@ const ChatApp = ({ onLogout }) => {
       reader.onload = (ev) => resolve(ev.target.result.split(',')[1]);
       reader.readAsDataURL(file);
     });
-
-  const handleVoiceToggle = async () => {
-    if (recording) {
-      mediaRecorderRef.current?.stop();
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      audioChunksRef.current = [];
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
-      };
-      recorder.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
-        setRecording(false);
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const formData = new FormData();
-        formData.append('audio_file', blob, 'voice.webm');
-        try {
-          const result = await apiClient.postForm('/analyze/voice', formData);
-          if (result.tone) setVoiceTone(result.tone);
-          if (result.transcript) {
-            setInput((prev) => (prev ? `${prev} ${result.transcript}` : result.transcript));
-          }
-        } catch (err) {
-          console.error(err);
-          alert('Voice analysis failed. Check microphone permissions and try again.');
-        }
-      };
-      mediaRecorderRef.current = recorder;
-      recorder.start();
-      setRecording(true);
-    } catch (err) {
-      console.error(err);
-      alert('Microphone access is required for voice analysis.');
-    }
-  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -173,20 +130,15 @@ const ChatApp = ({ onLogout }) => {
         messages: contextMessages,
         text_sentiment: 0.0,
         image_b64,
-        voice_tone: voiceTone,
       };
 
       setImageFile(null);
       setImagePreview(null);
-      setVoiceTone(null);
 
       const response = await apiClient.post('/chat/', payload);
       setCurrentState(response.emotional_state);
       if (response.face_emotion) {
-        setLastVision({
-          emotion: response.face_emotion,
-          source: response.vision_source || 'vision',
-        });
+        setLastVision({ emotion: response.face_emotion });
       }
 
       const history = await apiClient.get('/chat/history');
@@ -267,9 +219,7 @@ const ChatApp = ({ onLogout }) => {
           </div>
           <p className="status-label">CURRENT STATE</p>
           {lastVision && (
-            <p className="vision-hint">
-              Face: {lastVision.emotion} ({lastVision.source})
-            </p>
+            <p className="vision-hint">From photo: {lastVision.emotion}</p>
           )}
         </div>
 
@@ -374,9 +324,6 @@ const ChatApp = ({ onLogout }) => {
                   </button>
                 </div>
               )}
-              {voiceTone && (
-                <div className="voice-tone-chip">Voice tone: {voiceTone}</div>
-              )}
               <form onSubmit={handleSend} className="chat-input-area">
                 <label className="image-upload-btn" title="Attach photo for facial analysis">
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -398,18 +345,6 @@ const ChatApp = ({ onLogout }) => {
                     style={{ display: 'none' }}
                   />
                 </label>
-                <button
-                  type="button"
-                  className={`voice-btn ${recording ? 'recording' : ''}`}
-                  onClick={handleVoiceToggle}
-                  disabled={sending}
-                  title={recording ? 'Stop recording' : 'Record voice note'}
-                  aria-label={recording ? 'Stop recording' : 'Record voice'}
-                >
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-                    <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zm-5 9v2h3v2H9v-2h3v-2H7z" />
-                  </svg>
-                </button>
                 <input
                   type="text"
                   value={input}

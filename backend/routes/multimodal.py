@@ -22,7 +22,7 @@ async def analyze_face(
     """Analyze face from base64 image and return detected emotion."""
     raw = await ai_service.get_vision_emotion(image_base64)
     emotion = emotion_engine.normalize_face_emotion(raw)
-    model_source = "pytorch" if ai_service.custom_vision_model else "groq-vision"
+    model_source = ai_service.vision_backend
     return {"emotion": emotion, "raw_emotion": raw, "source": "face", "model_source": model_source}
 
 @router.post("/voice")

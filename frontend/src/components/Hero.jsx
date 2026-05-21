@@ -16,7 +16,7 @@ const Hero = ({ onLoginClick, onViewModalities }) => {
             for help
           </h1>
           <p className="hero-desc">
-            MindScape integrates text, speech, facial expression, and screen behavior into a unified AI system — delivering early detection of mental issues and personalized, real-time therapy.
+            MindScape integrates text, facial expression, and screen behavior into a unified AI system — delivering early detection of mental strain and personalized, real-time therapy.
           </p>
           <div className="hero-actions">
             <button className="btn desktop-hero-btn" onClick={onLoginClick}>EXPLORE THE SYSTEM</button>
@@ -40,7 +40,7 @@ const Hero = ({ onLoginClick, onViewModalities }) => {
              
              {/* Modality nodes */}
              <div className="node text-node">TEXT</div>
-             <div className="node voice-node">VOICE</div>
+             <div className="node behavior-node">BEHAVIOR</div>
              <div className="node face-node">FACE</div>
              <div className="node screen-node">SCREEN</div>
              <div className="node alert-node">ALERT</div>

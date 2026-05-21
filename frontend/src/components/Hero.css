@@ -122,7 +122,7 @@
   color: white;
 }
 
-.voice-node {
+.behavior-node {
   background: var(--color-blue);
   top: 220px;
   right: 110px;

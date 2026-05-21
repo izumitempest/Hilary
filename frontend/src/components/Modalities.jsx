@@ -7,29 +7,19 @@ const MODALITIES = [
     label: 'TEXT',
     title: 'Text sentiment analysis',
     body: 'Natural language processing analyzes chat and journal input for sentiment shifts, emotional keywords, and linguistic markers associated with anxiety, depression, or stress.',
-    detail: 'Keyword heuristics and Groq Llama 3.3 refine the fused emotional state during each therapy turn.',
+    detail: 'Each message is scored for tone and emotional cues, then folded into your live session state.',
     visualLabel: 'Sentiment stream',
     visualValue: 'Active in chat',
     barWidths: ['80%', '60%', '90%', '40%'],
   },
   {
-    id: 'speech',
-    label: 'SPEECH',
-    title: 'Voice tone & transcript',
-    body: 'Whisper transcribes voice notes while librosa extracts pitch, energy, and tempo to classify prosody (e.g. withdrawn, agitated, calm).',
-    detail: 'Use the microphone in your therapy session to send voice clips for tone-aware responses.',
-    visualLabel: 'Voice analysis',
-    visualValue: 'Whisper + prosody',
-    barWidths: ['50%', '70%', '45%', '85%'],
-  },
-  {
     id: 'facial',
     label: 'FACIAL',
     title: 'Facial expression analysis',
-    body: 'Photos are analyzed with a custom PyTorch mental-health image model, with Groq Vision as fallback when needed.',
-    detail: 'Attach an image in chat — vision feeds the multimodal fusion engine alongside your words.',
+    body: 'Photos you share are analyzed by a dedicated vision model trained for mental-health expression cues.',
+    detail: 'Attach an image in chat — facial signals feed the fusion engine alongside your words.',
     visualLabel: 'Vision model',
-    visualValue: 'PyTorch + Groq Vision',
+    visualValue: 'Custom classifier',
     barWidths: ['65%', '75%', '55%', '70%'],
   },
   {
@@ -54,7 +44,7 @@ const Modalities = () => {
         <div className="mod-header">
           <div className="mod-tag">02 — Modalities</div>
           <h2 className="mod-title">
-            Four streams,<br />
+            Three streams,<br />
             <span>one coherent picture</span>
           </h2>
         </div>

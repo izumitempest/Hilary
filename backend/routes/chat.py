@@ -53,11 +53,7 @@ async def chat(
     if request.image_b64:
         raw_face = await ai_service.get_vision_emotion(request.image_b64)
         face_emotion = emotion_engine.normalize_face_emotion(raw_face)
-        vision_source = (
-            "pytorch"
-            if ai_service.custom_vision_model
-            else "groq-vision"
-        )
+        vision_source = ai_service.vision_backend if request.image_b64 else None
 
     # 4. Perform Multi-modal Fusion (Preliminary)
     preliminary_state = emotion_engine.multi_modal_fusion(

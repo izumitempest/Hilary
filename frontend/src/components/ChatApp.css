@@ -311,31 +311,6 @@
   justify-content: center;
 }
 
-.voice-tone-chip {
-  margin: 0 15% 8px;
-  font-size: 0.8rem;
-  color: var(--bg-dark-green);
-  font-weight: 600;
-}
-
-.voice-btn {
-  background: transparent;
-  border: none;
-  color: var(--bg-dark-green);
-  cursor: pointer;
-  padding: 10px;
-  flex-shrink: 0;
-}
-
-.voice-btn.recording {
-  color: #d32f2f;
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  50% { opacity: 0.5; }
-}
-
 .vision-hint {
   font-size: 0.7rem;
   color: var(--text-light);

@@ -29,7 +29,7 @@ const DashboardApp = () => {
     <div className="dashboard-content animate-fade-in">
       <div className="dash-header">
         <h2>Intelligence Dashboard</h2>
-        <p>Four Streams, One Coherent Picture.</p>
+        <p>Three Streams, One Coherent Picture.</p>
       </div>
 
       <div className="dash-grid">

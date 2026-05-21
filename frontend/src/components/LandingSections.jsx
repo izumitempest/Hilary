@@ -20,7 +20,7 @@ const LandingSections = () => (
         <div style={tagStyle}>ABOUT</div>
         <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Clinical empathy, powered by AI</h2>
         <p style={{ maxWidth: '640px', lineHeight: 1.7, color: 'var(--text-light)' }}>
-          MindScape fuses conversational therapy with behavioral signals, facial expression analysis, and voice prosody
+          MindScape fuses conversational therapy with behavioral signals and facial expression analysis
           so support adapts to how you feel — not only what you type.
         </p>
       </div>
@@ -41,9 +41,8 @@ const LandingSections = () => (
       <div className="container">
         <div style={tagStyle}>SYSTEM</div>
         <p style={{ maxWidth: '640px', lineHeight: 1.7, color: 'var(--text-light)' }}>
-          A FastAPI backend runs multimodal fusion and Groq-powered reasoning. A custom PyTorch image model
-          (with Groq Vision fallback) analyzes photos; Whisper and librosa handle voice. The React client
-          connects through authenticated REST endpoints.
+          A secure API handles authentication, therapy chat, and multimodal fusion. Vision runs on dedicated inference
+          infrastructure; the web app connects through encrypted, authenticated endpoints.
         </p>
       </div>
     </section>

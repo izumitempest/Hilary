@@ -11,6 +11,8 @@ const Auth = ({ onLoginSuccess, onBack }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [regSuccess, setRegSuccess] = useState(false);
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +20,7 @@ const Auth = ({ onLoginSuccess, onBack }) => {
     
     setLoading(true);
     setError(null);
+    setVerificationRequired(false);
     try {
       if (isLogin) {
         const userData = await apiClient.login(email, password);
@@ -33,8 +36,23 @@ const Auth = ({ onLoginSuccess, onBack }) => {
       }
     } catch (err) {
       setError(err.message);
+      if (err.status === 403) {
+        setVerificationRequired(true);
+      }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    try {
+      await apiClient.resendVerification(email);
+      alert("A new verification link has been sent to your email!");
+    } catch (err) {
+      alert("Failed to resend verification email: " + err.message);
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -81,7 +99,33 @@ const Auth = ({ onLoginSuccess, onBack }) => {
                 <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
               </div>
               
-              {error && <div className="error-msg">{error}</div>}
+              {error && (
+                <div className="error-msg">
+                  {error}
+                  {verificationRequired && (
+                    <div style={{ marginTop: '10px' }}>
+                      <button
+                        type="button"
+                        onClick={handleResendVerification}
+                        disabled={resendLoading}
+                        style={{
+                          background: 'rgba(255,255,255,0.1)',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          color: '#fff',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.75rem',
+                          padding: '4px 8px',
+                          display: 'block',
+                          margin: '5px auto 0 auto'
+                        }}
+                      >
+                        {resendLoading ? 'SENDING...' : 'RESEND VERIFICATION LINK'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <button type="submit" className="btn auth-btn" disabled={loading}>
                 {loading ? 'AUTHENTICATING...' : (isLogin ? 'SECURE LOGIN' : 'CREATE ACCOUNT')}

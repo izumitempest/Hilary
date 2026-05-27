@@ -28,10 +28,18 @@ class EmailService:
         msg.set_content(text_body)
         msg.add_alternative(html_body, subtype="html")
 
-        with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
+        try:
+            # Explicitly ensure STARTTLS is called before logging in with timeout
+            server = smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=15)
+            server.ehlo()
             server.starttls()
+            server.ehlo()
             server.login(self.smtp_user, self.smtp_pass)
             server.send_message(msg)
+            server.quit()
+        except Exception as e:
+            print(f"SMTP Error: {e}")
+            raise e
 
     def send_verification_email(self, to_email: str, token: str):
         verify_url = f"{self.frontend_base_url}/?verify_token={quote(token)}"

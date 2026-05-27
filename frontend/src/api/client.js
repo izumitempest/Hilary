@@ -7,14 +7,17 @@ async function handleResponse(response) {
   
   if (!response.ok) {
     let message = `Server Error (${response.status})`;
+    let data = null;
     if (isJson) {
-      const errorData = await response.json();
-      message = errorData.detail || message;
+      data = await response.json();
+      message = data.detail || message;
     } else {
-      const text = await response.text();
-      message = text || message;
+      message = await response.text() || message;
     }
-    throw new Error(message);
+    const error = new Error(message);
+    error.status = response.status;
+    error.data = data;
+    throw error;
   }
 
   if (response.status === 204) return null;

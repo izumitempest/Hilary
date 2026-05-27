@@ -60,12 +60,14 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
         email_success = email_service.send_verification_email(db_user.email, token)
 
         if not email_success:
-            # Do not throw a 500 error here. Allow the user record to stand, but tell them to retry.
-            return {
-                "status": "partial_success",
-                "message": "Account created successfully, but your verification email failed to dispatch. Please use the resend option.",
-                "user": db_user
-            }
+            # CRITICAL: Clean up the dangling database record so they can try again
+            session.delete(db_user)
+            session.commit()
+
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Account creation suspended: The verification email could not be dispatched. Please try again in a moment."
+            )
 
         return {"status": "success", "message": "User registered. Please confirm your email.", "user": db_user}
     except HTTPException:

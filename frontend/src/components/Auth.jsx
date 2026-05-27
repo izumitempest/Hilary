@@ -31,10 +31,7 @@ const Auth = ({ onLoginSuccess, onBack }) => {
           setLoading(false);
           return;
         }
-        const response = await apiClient.register(username, email, password);
-        if (response && response.status === 'partial_success') {
-          setError(response.message);
-        }
+        await apiClient.register(username, email, password);
         setRegSuccess(true);
       }
     } catch (err) {

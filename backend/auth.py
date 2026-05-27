@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-it-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 1 week
+EMAIL_VERIFY_EXPIRE_MINUTES = 60 * 24  # 24 hours
 
 # Switched to Argon2: No 72-character limit and more secure
 # Keeping bcrypt for partial compatibility
@@ -31,9 +32,28 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
         return encoded_jwt.decode('utf-8')
     return encoded_jwt
 
+
+def create_email_verification_token(email: str):
+    expire = datetime.now(timezone.utc) + timedelta(minutes=EMAIL_VERIFY_EXPIRE_MINUTES)
+    payload = {"sub": email, "type": "email_verify", "exp": expire}
+    encoded_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    if isinstance(encoded_jwt, bytes):
+        return encoded_jwt.decode("utf-8")
+    return encoded_jwt
+
 def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except Exception:
+        return None
+
+
+def decode_email_verification_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "email_verify":
+            return None
         return payload
     except Exception:
         return None

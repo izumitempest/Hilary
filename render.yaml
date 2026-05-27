@@ -15,11 +15,23 @@ services:
         value: meta-llama/llama-4-scout-17b-16e-instruct
       - key: CORS_ORIGINS
         value: https://hilary-frontend.onrender.com
+      - key: FRONTEND_URL
+        value: https://hilary-frontend.onrender.com
       - key: VISION_PROVIDER
         value: groq
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_VISION_MODEL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
         sync: false
       - key: PYTHON_VERSION
         value: 3.10.0

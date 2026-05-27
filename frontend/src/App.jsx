@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiClient } from './api/client';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Modalities from './components/Modalities';
@@ -15,6 +16,7 @@ function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
+  const [verifyStatus, setVerifyStatus] = useState(null);
 
   useEffect(() => {
     // Check if user is already logged in (has token)
@@ -24,6 +26,24 @@ function App() {
       setIsAuthenticated(true);
       if (storedUser) setUser(JSON.parse(storedUser));
     }
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('verify_token');
+    if (!token) return;
+    (async () => {
+      try {
+        await apiClient.verifyEmail(token);
+        setVerifyStatus({ type: 'success', message: 'Email verified successfully. You can now sign in.' });
+      } catch (e) {
+        setVerifyStatus({ type: 'error', message: e.message || 'Verification failed.' });
+      } finally {
+        params.delete('verify_token');
+        const clean = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
+        window.history.replaceState({}, '', clean);
+      }
+    })();
   }, []);
 
   const handleLoginSuccess = (userData) => {
@@ -38,6 +58,15 @@ function App() {
     return (
       <div className="verification-banner">
         <span>Please check your inbox ({user.email}) to verify your account.</span>
+        <button
+          className="resend-link"
+          onClick={async () => {
+            await apiClient.resendVerification(user.email);
+            alert('Verification email resent.');
+          }}
+        >
+          Resend link
+        </button>
       </div>
     );
   };
@@ -60,6 +89,19 @@ function App() {
     <>
       <Header onLoginClick={() => setShowAuth(true)} />
       <main>
+        {verifyStatus && (
+          <div
+            style={{
+              padding: '12px 20px',
+              textAlign: 'center',
+              color: verifyStatus.type === 'success' ? '#2D5A4C' : '#B00020',
+              background: verifyStatus.type === 'success' ? '#E6F4EE' : '#FDECEC',
+              borderBottom: '1px solid rgba(0,0,0,0.08)',
+            }}
+          >
+            {verifyStatus.message}
+          </div>
+        )}
         <Hero onLoginClick={() => setShowAuth(true)} onViewModalities={scrollToModalities} />
         <Modalities />
         <LandingSections />
@@ -90,6 +132,16 @@ function App() {
           top: 0;
           z-index: 1100;
           animation: slideDown 0.3s ease-out;
+        }
+        .resend-link {
+          background: #856404;
+          color: white;
+          border: none;
+          padding: 4px 12px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          cursor: pointer;
+          font-weight: 700;
         }
         @keyframes slideDown {
           from { transform: translateY(-100%); }

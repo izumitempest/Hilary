@@ -111,6 +111,14 @@ export const apiClient = {
     return data;
   },
 
+  async verifyEmail(token) {
+    return this.get(`/auth/verify-email?token=${encodeURIComponent(token)}`);
+  },
+
+  async resendVerification(email) {
+    return this.post('/auth/resend-verification', { email });
+  },
+
   async delete(path) {
     return this.request(path, { method: 'DELETE' });
   },

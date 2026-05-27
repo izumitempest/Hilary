@@ -92,6 +92,8 @@ public class UsageStatsPlugin extends Plugin {
         while (events.hasNextEvent()) {
             events.getNextEvent(event);
             if (event.getEventType() == 18) {
+                unlockCount++;
+            }
         }
         return unlockCount;
     }

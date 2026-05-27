@@ -39,7 +39,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
         raise credentials_exception
     return user
 
-@router.post("/register", response_model=UserRead)
+@router.post("/register")
 def register(user_in: UserCreate, session: Session = Depends(get_session)):
     try:
         # Check if user exists (prevent UniqueViolation before it happens)
@@ -55,9 +55,19 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
         session.add(db_user)
         session.commit()
         session.refresh(db_user)
+
         token = create_email_verification_token(db_user.email)
-        email_service.send_verification_email(db_user.email, token)
-        return db_user
+        email_success = email_service.send_verification_email(db_user.email, token)
+
+        if not email_success:
+            # Do not throw a 500 error here. Allow the user record to stand, but tell them to retry.
+            return {
+                "status": "partial_success",
+                "message": "Account created successfully, but your verification email failed to dispatch. Please use the resend option.",
+                "user": db_user
+            }
+
+        return {"status": "success", "message": "User registered. Please confirm your email.", "user": db_user}
     except HTTPException:
         raise
     except Exception as e:
@@ -121,5 +131,7 @@ def resend_verification(body: VerificationRequest, session: Session = Depends(ge
     if user.is_verified:
         return {"status": "already_verified"}
     token = create_email_verification_token(user.email)
-    email_service.send_verification_email(user.email, token)
+    email_success = email_service.send_verification_email(user.email, token)
+    if not email_success:
+        raise HTTPException(status_code=500, detail="Failed to send verification email.")
     return {"status": "sent"}

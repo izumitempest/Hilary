@@ -1,47 +1,61 @@
 import os
-import smtplib
-from email.message import EmailMessage
+import requests
 from urllib.parse import quote
-
 
 class EmailService:
     def __init__(self):
-        self.smtp_host = os.getenv("SMTP_HOST")
-        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
-        self.smtp_user = os.getenv("SMTP_USER")
-        self.smtp_pass = os.getenv("SMTP_PASS")
-        self.from_email = os.getenv("EMAIL_FROM", self.smtp_user or "noreply@mindscape.ai")
+        self.api_key = os.getenv("BREVO_API_KEY")
+        self.sender_email = os.getenv("EMAIL_FROM", "terhembafanushahemba@gmail.com")
         self.frontend_base_url = (os.getenv("FRONTEND_URL") or "https://hilary-frontend.onrender.com").rstrip("/")
 
     @property
     def configured(self) -> bool:
-        return bool(self.smtp_host and self.smtp_user and self.smtp_pass)
+        return bool(self.api_key)
 
-    def _send_email(self, to_email: str, subject: str, text_body: str, html_body: str):
+    def _send_email(self, to_email: str, subject: str, text_body: str, html_body: str) -> bool:
         if not self.configured:
-            raise RuntimeError("SMTP is not configured. Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS.")
+            print("CRITICAL MAILER ERROR: BREVO_API_KEY environment variable is missing.")
+            return False
 
-        msg = EmailMessage()
-        msg["Subject"] = subject
-        msg["From"] = self.from_email
-        msg["To"] = to_email
-        msg.set_content(text_body)
-        msg.add_alternative(html_body, subtype="html")
+        url = "https://api.brevo.com/v3/smtp/email"
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "api-key": self.api_key
+        }
+
+        payload = {
+            "sender": {
+                "name": "Hilary Mindscape",
+                "email": self.sender_email
+            },
+            "to": [
+                {
+                    "email": to_email
+                }
+            ],
+            "subject": subject,
+            "textContent": text_body,
+            "htmlContent": html_body
+        }
 
         try:
-            # Explicitly ensure STARTTLS is called before logging in with timeout
-            server = smtplib.SMTP(self.smtp_host, self.smtp_port, timeout=15)
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(self.smtp_user, self.smtp_pass)
-            server.send_message(msg)
-            server.quit()
-        except Exception as e:
-            print(f"SMTP Error: {e}")
-            raise e
+            print(f"Routing HTTP post payload to Brevo API for recipient: {to_email}...")
+            response = requests.post(url, json=payload, headers=headers, timeout=15)
 
-    def send_verification_email(self, to_email: str, token: str):
+            if response.status_code in [201, 202, 200]:
+                print(f"HTTP mailing payload accepted by Brevo successfully (Code: {response.status_code}).")
+                return True
+            else:
+                print(f"Brevo API rejected request with code {response.status_code}: {response.text}")
+                return False
+
+        except Exception as e:
+            print(f"HTTP Mail pipeline failed to execute: {str(e)}")
+            return False
+
+    def send_verification_email(self, to_email: str, token: str) -> bool:
+        # Note: The frontend uses /?verify_token=... according to previous App.jsx logic
         verify_url = f"{self.frontend_base_url}/?verify_token={quote(token)}"
         subject = "Verify your MindScape account"
         text_body = (
@@ -60,7 +74,7 @@ class EmailService:
           </body>
         </html>
         """
-        self._send_email(to_email, subject, text_body, html_body)
+        return self._send_email(to_email, subject, text_body, html_body)
 
 
 email_service = EmailService()

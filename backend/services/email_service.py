@@ -55,25 +55,33 @@ class EmailService:
             return False
 
     def send_verification_email(self, to_email: str, token: str) -> bool:
-        # Note: The frontend uses /?verify_token=... according to previous App.jsx logic
+        # Note: The frontend handles verification at the root path via 'verify_token' query param
         verify_url = f"{self.frontend_base_url}/?verify_token={quote(token)}"
-        subject = "Verify your MindScape account"
+        subject = "Verify Your Account - MindScape"
+
+        # Using concatenation to build the HTML body to avoid f-string escaping issues with CSS/HTML
+        html_body = (
+            "<html><body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>"
+            "<h2>Welcome to MindScape</h2>"
+            "<p>Thank you for joining us! Please click the button below to verify your email address and activate your account:</p>"
+            "<p style='margin: 25px 0;'>"
+            "<a href='" + verify_url + "' style='background-color: #2D5A4C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;'>"
+            "Verify Email Address"
+            "</a>"
+            "</p>"
+            "<p>If the button doesn't work, copy and paste this link into your browser:</p>"
+            "<p style='word-break: break-all; color: #2D5A4C;'>" + verify_url + "</p>"
+            "<br>"
+            "<p style='font-size: 0.8em; color: #777;'>If you did not create this account, you can safely ignore this email.</p>"
+            "</body></html>"
+        )
+
         text_body = (
             "Welcome to MindScape!\n\n"
             f"Please verify your email by opening this link:\n{verify_url}\n\n"
             "If you did not create this account, you can ignore this message."
         )
-        html_body = f"""
-        <html>
-          <body style="font-family: Arial, sans-serif; line-height: 1.5;">
-            <h2>Welcome to MindScape</h2>
-            <p>Please verify your email address to activate your account.</p>
-            <p><a href="{verify_url}" style="display:inline-block;padding:10px 16px;background:#2D5A4C;color:#fff;text-decoration:none;border-radius:6px;">Verify Email</a></p>
-            <p>If the button does not work, copy and paste this URL into your browser:</p>
-            <p>{verify_url}</p>
-          </body>
-        </html>
-        """
+
         return self._send_email(to_email, subject, text_body, html_body)
 
 

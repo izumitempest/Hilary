@@ -38,7 +38,6 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Required for the Behavioral Modality (screen time & unlocks) -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />

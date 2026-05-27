@@ -318,6 +318,17 @@
   text-align: center;
 }
 
+.usage-access-link {
+  margin-top: 8px;
+  background: none;
+  border: none;
+  color: var(--bg-dark-green);
+  font-size: 0.72rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+}
+
 .crisis-overlay {
   position: fixed;
   top: 0;

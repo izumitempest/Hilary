@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { apiClient } from '../api/client';
 import DashboardApp from './DashboardApp';
+import { logMobileBehaviorSnapshot, openUsageSettings } from '../mobile/usageStats';
 import './ChatApp.css';
 
 const IMAGE_PREVIEW_KEY = 'hilary_image_previews';
@@ -44,6 +45,10 @@ const ChatApp = ({ onLogout }) => {
 
   useEffect(() => {
     loadHistory();
+  }, []);
+
+  useEffect(() => {
+    logMobileBehaviorSnapshot(apiClient);
   }, []);
 
   const loadHistory = async () => {
@@ -218,6 +223,9 @@ const ChatApp = ({ onLogout }) => {
             {currentState}
           </div>
           <p className="status-label">CURRENT STATE</p>
+          <button type="button" className="usage-access-link" onClick={openUsageSettings}>
+            Enable app usage access
+          </button>
           {lastVision && (
             <p className="vision-hint">From photo: {lastVision.emotion}</p>
           )}

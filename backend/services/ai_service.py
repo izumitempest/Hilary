@@ -1,7 +1,7 @@
-import os
 import json
 import logging
-from typing import List, Dict, Optional
+import os
+from typing import Dict, List, Optional
 
 import httpx
 from groq import Groq
@@ -20,18 +20,16 @@ class GroqService:
 
         self.client = Groq(api_key=self.api_key)
         self.model = "llama-3.3-70b-versatile"
-
-        self.hf_vision_url = (os.getenv("HF_VISION_API_URL") or "").strip().rstrip("/")
-        self.hf_token = (os.getenv("HF_API_TOKEN") or os.getenv("HUGGINGFACE_API_TOKEN") or "").strip()
-
-        if self.hf_vision_url:
-            logger.info("Vision inference: Hugging Face Space at %s", self.hf_vision_url)
-        else:
-            logger.info("Vision inference: Groq Vision fallback (set HF_VISION_API_URL for custom model)")
+        self.vision_provider = (os.getenv("VISION_PROVIDER") or "groq").strip().lower()
+        self.gemini_api_key = (os.getenv("GEMINI_API_KEY") or "").strip()
+        self.gemini_model = os.getenv("GEMINI_VISION_MODEL", "gemini-1.5-flash")
+        if self.vision_provider == "gemini" and not self.gemini_api_key:
+            logger.warning("VISION_PROVIDER=gemini but GEMINI_API_KEY is missing. Falling back to Groq.")
+            self.vision_provider = "groq"
 
     @property
     def vision_backend(self) -> str:
-        return "huggingface" if self.hf_vision_url else "groq-vision"
+        return self.vision_provider
 
     async def get_therapist_response(
         self,
@@ -97,41 +95,7 @@ class GroqService:
                 "insights": "Thinking deeply about our conversation...",
             }
 
-    async def _predict_via_huggingface(self, image_b64: str) -> Optional[str]:
-        if not self.hf_vision_url:
-            return None
-
-        headers = {"Content-Type": "application/json"}
-        if self.hf_token:
-            headers["Authorization"] = f"Bearer {self.hf_token}"
-
-        payload = {"image_base64": image_b64}
-        timeout = httpx.Timeout(90.0, connect=30.0)
-
-        try:
-            async with httpx.AsyncClient(timeout=timeout) as client:
-                response = await client.post(
-                    f"{self.hf_vision_url}/predict",
-                    json=payload,
-                    headers=headers,
-                )
-                response.raise_for_status()
-                data = response.json()
-                emotion = data.get("emotion", "Neutral")
-                logger.info("HF vision detected: %s", emotion)
-                return EmotionEngine.normalize_face_emotion(emotion) or "Neutral"
-        except httpx.HTTPStatusError as e:
-            logger.error("HF vision HTTP error %s: %s", e.response.status_code, e.response.text)
-        except Exception as e:
-            logger.error("HF vision request failed: %s", e)
-        return None
-
-    async def get_vision_emotion(self, image_b64: str) -> str:
-        """Custom model on Hugging Face Space, then Groq Vision fallback."""
-        hf_emotion = await self._predict_via_huggingface(image_b64)
-        if hf_emotion:
-            return hf_emotion
-
+    async def _predict_via_groq(self, image_b64: str) -> Optional[str]:
         try:
             completion = self.client.chat.completions.create(
                 model="llama-3.2-11b-vision-preview",
@@ -157,7 +121,57 @@ class GroqService:
             return EmotionEngine.normalize_face_emotion(raw) or "Neutral"
         except Exception as e:
             logger.error("Groq Vision Emotion Error: %s", e)
-            return "Neutral"
+        return None
+
+    async def _predict_via_gemini(self, image_b64: str) -> Optional[str]:
+        if not self.gemini_api_key:
+            return None
+        url = (
+            f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemini_model}:generateContent"
+            f"?key={self.gemini_api_key}"
+        )
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": "Analyze facial expression and output only one emotion: Happy, Sad, Anxious, Neutral, Angry, or Surprised."},
+                        {"inline_data": {"mime_type": "image/jpeg", "data": image_b64}},
+                    ]
+                }
+            ],
+            "generationConfig": {"temperature": 0, "maxOutputTokens": 20},
+        }
+        try:
+            async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=20.0)) as client:
+                response = await client.post(url, json=payload)
+                response.raise_for_status()
+                data = response.json()
+                candidates = data.get("candidates", [])
+                if not candidates:
+                    return None
+                parts = candidates[0].get("content", {}).get("parts", [])
+                text = " ".join([p.get("text", "") for p in parts]).strip()
+                return EmotionEngine.normalize_face_emotion(text) or "Neutral"
+        except Exception as e:
+            logger.error("Gemini Vision Emotion Error: %s", e)
+            return None
+
+    async def get_vision_emotion(self, image_b64: str) -> str:
+        if self.vision_provider == "gemini":
+            emotion = await self._predict_via_gemini(image_b64)
+            if emotion:
+                return emotion
+            fallback = await self._predict_via_groq(image_b64)
+            return fallback or "Neutral"
+
+        emotion = await self._predict_via_groq(image_b64)
+        if emotion:
+            return emotion
+        if self.gemini_api_key:
+            backup = await self._predict_via_gemini(image_b64)
+            if backup:
+                return backup
+        return "Neutral"
 
     async def get_audio_transcription(self, file_path: str) -> str:
         try:

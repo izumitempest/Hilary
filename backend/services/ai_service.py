@@ -20,6 +20,10 @@ class GroqService:
 
         self.client = Groq(api_key=self.api_key)
         self.model = "llama-3.3-70b-versatile"
+        self.groq_vision_model = os.getenv(
+            "GROQ_VISION_MODEL",
+            "meta-llama/llama-4-scout-17b-16e-instruct",
+        )
         self.vision_provider = (os.getenv("VISION_PROVIDER") or "groq").strip().lower()
         self.gemini_api_key = (os.getenv("GEMINI_API_KEY") or "").strip()
         self.gemini_model = os.getenv("GEMINI_VISION_MODEL", "gemini-1.5-flash")
@@ -96,29 +100,45 @@ class GroqService:
             }
 
     async def _predict_via_groq(self, image_b64: str) -> Optional[str]:
+        # Try configured model first, then known fallback if Groq deprecates it.
+        candidate_models = [
+            self.groq_vision_model,
+            "meta-llama/llama-4-maverick-17b-128e-instruct",
+        ]
+        seen = set()
+        models_to_try = []
+        for model_name in candidate_models:
+            if model_name and model_name not in seen:
+                seen.add(model_name)
+                models_to_try.append(model_name)
+
         try:
-            completion = self.client.chat.completions.create(
-                model="llama-3.2-11b-vision-preview",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
+            for model_name in models_to_try:
+                try:
+                    completion = self.client.chat.completions.create(
+                        model=model_name,
+                        messages=[
                             {
-                                "type": "text",
-                                "text": "Analyze the facial expression and body language in this image. Output only the detected emotion (e.g., Happy, Sad, Anxious, Neutral).",
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"},
-                            },
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "Analyze the facial expression and body language in this image. Output only the detected emotion (e.g., Happy, Sad, Anxious, Neutral).",
+                                    },
+                                    {
+                                        "type": "image_url",
+                                        "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"},
+                                    },
+                                ],
+                            }
                         ],
-                    }
-                ],
-                temperature=0,
-                max_tokens=50,
-            )
-            raw = completion.choices[0].message.content.strip()
-            return EmotionEngine.normalize_face_emotion(raw) or "Neutral"
+                        temperature=0,
+                        max_tokens=50,
+                    )
+                    raw = completion.choices[0].message.content.strip()
+                    return EmotionEngine.normalize_face_emotion(raw) or "Neutral"
+                except Exception as model_error:
+                    logger.error("Groq vision model %s failed: %s", model_name, model_error)
         except Exception as e:
             logger.error("Groq Vision Emotion Error: %s", e)
         return None

@@ -5,3 +5,5 @@ frontend-rn/
 .venv/
 backend/.env
 backend/.env
+backend/.env
+frontend/android/local.properties

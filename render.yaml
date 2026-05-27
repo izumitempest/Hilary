@@ -11,6 +11,8 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
+      - key: GROQ_VISION_MODEL
+        value: meta-llama/llama-4-scout-17b-16e-instruct
       - key: CORS_ORIGINS
         value: https://hilary-frontend.onrender.com
       - key: VISION_PROVIDER

@@ -10,7 +10,7 @@ echo " Starting MindScape Development Suite..."
 
 # 1. Start the Backend
 # We start from PROJECT_ROOT and use 'python -m backend.main' to resolve imports correctly
-echo " Starting Backend on http://192.168.1.164:8000..."
+echo " Starting Backend on http://localhost:8000..."
 cd "$PROJECT_ROOT"
 source "$PROJECT_ROOT/venv/bin/activate"
 export PYTHONPATH="$PROJECT_ROOT"

@@ -1,30 +1,25 @@
-import time
+# pyrefly: ignore [missing-import]
+import pytest
+# pyrefly: ignore [missing-import]
+from sqlmodel import select
 from fastapi.testclient import TestClient
 from backend.main import app
 from backend.database import SQLModel, engine
+from backend.models.user import User
 
 client = TestClient(app)
 
-def test_full_system_flow():
-    # 0. Clean DB for test
-    SQLModel.metadata.drop_all(engine)
-    SQLModel.metadata.create_all(engine)
+def test_full_therapy_cycle(client, session):
+    # 1. Register User
+    client.post("/auth/register", json={"email": "live@example.com", "password": "password123", "full_name": "Live User"})
     
-    print("\n--- Starting Live system Test ---")
-    
-    # 1. Register
-    reg_resp = client.post("/auth/register", json={
-        "email": "izumi@example.com",
-        "password": "securepassword",
-        "full_name": "Izumi"
-    })
-    print(f"Register: {reg_resp.status_code}")
-    
+    # Manually verify user
+    user = session.exec(select(User).where(User.email == "live@example.com")).first()
+    user.is_verified = True
+    session.commit()
+
     # 2. Login
-    login_resp = client.post("/auth/login", data={
-        "username": "izumi@example.com",
-        "password": "securepassword"
-    })
+    login_resp = client.post("/auth/login", data={"username": "live@example.com", "password": "password123"})
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
     print(f"Login: {login_resp.status_code}")
@@ -33,7 +28,7 @@ def test_full_system_flow():
     behavior_resp = client.post("/behavior/log", headers=headers, json={
         "screen_time_seconds": 30000, # > 8 hours
         "unlock_count": 150,
-        "app_usage": {"social_media": 15000, "work": 2000}
+        "app_usage": {"instagram": 15000, "docs": 2000}
     })
     print(f"Log Behavior: {behavior_resp.status_code}")
     
@@ -54,7 +49,7 @@ def test_full_system_flow():
     
     assert "response" in data
     assert "emotional_state" in data
-    assert data["emotional_state"] == "Distressed/Anxious" # Based on behavior logged earlier
+    assert data["emotional_state"] == "Critical Distress" # Based on behavior logged earlier + text sentiment -0.6
     
     # 5. Verify History Persistence
     print("Verifying history...")

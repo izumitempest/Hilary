@@ -43,16 +43,55 @@ async def get_dashboard_summary(
     ).all()
     
     behavior_history = []
+    social, prod, ent, comm, health = 0, 0, 0, 0, 0
+    total_screen_time = 0
+    
     for b in behaviors:
         behavior_history.append({
             "timestamp": b.timestamp,
             "screen_time": b.screen_time_seconds,
             "unlocks": b.unlock_count
         })
+        total_screen_time += b.screen_time_seconds
+        for app_name, time_s in (b.app_usage or {}).items():
+            app_lower = app_name.lower()
+            if any(k in app_lower for k in ["instagram", "facebook", "tiktok", "twitter", "snapchat", "reddit"]): social += time_s
+            elif any(k in app_lower for k in ["mail", "docs", "notes", "calendar", "slack", "teams"]): prod += time_s
+            elif any(k in app_lower for k in ["youtube", "netflix", "spotify", "game"]): ent += time_s
+            elif any(k in app_lower for k in ["whatsapp", "messages", "telegram"]): comm += time_s
+            elif any(k in app_lower for k in ["health", "fitness", "meditation"]): health += time_s
+
+    # Compute a simple Wellbeing Score (0-100)
+    # Higher is better. Based on balanced app usage and positive emotional states
+    score = 70 # Base score
+    if total_screen_time > 0:
+        social_ratio = social / total_screen_time
+        if social_ratio > 0.4: score -= 15
+        elif social_ratio > 0.2: score -= 5
+        
+        health_ratio = health / total_screen_time
+        if health_ratio > 0.05: score += 10
+        
+    pos_states = emotion_counts.get("Positive/Happy", 0) + emotion_counts.get("Calm/Content", 0)
+    neg_states = emotion_counts.get("Critical Distress", 0) + emotion_counts.get("Distressed/Anxious", 0) + emotion_counts.get("Sad", 0) + emotion_counts.get("Angry", 0)
+    total_emotions = sum(emotion_counts.values())
+    if total_emotions > 0:
+        score += (pos_states / total_emotions) * 20
+        score -= (neg_states / total_emotions) * 20
+        
+    score = max(0, min(100, int(score)))
         
     return {
         "emotion_distribution": emotion_counts,
         "behavior_history": behavior_history,
+        "app_breakdown": {
+            "Social": social,
+            "Productivity": prod,
+            "Entertainment": ent,
+            "Communication": comm,
+            "Health & Wellness": health
+        },
+        "wellbeing_score": score,
         "total_sessions": len(messages) // 2, # Rough estimate (user + assistant)
         "last_detected_state": messages[-1].emotional_state if messages else "Neutral"
     }

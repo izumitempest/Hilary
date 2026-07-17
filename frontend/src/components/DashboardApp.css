@@ -66,6 +66,10 @@
   font-weight: 600;
 }
 
+.score-stat {
+  color: var(--color-gold);
+}
+
 .dash-card p {
   font-size: 0.85rem;
   color: var(--text-light);

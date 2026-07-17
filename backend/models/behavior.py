@@ -12,7 +12,7 @@ class BehavioralData(SQLModel, table=True):
     
     # Usage metrics
     screen_time_seconds: int
-    app_usage: Dict[str, Any] = Field(default={}, sa_type=JSON)
+    app_usage: Dict[str, Any] = Field(default_factory=dict, sa_type=JSON)
     unlock_count: int
     
     # Emotional context detected from patterns

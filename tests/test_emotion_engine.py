@@ -7,8 +7,8 @@ def test_analyze_behavior_calm():
         BehavioralData(
             user_id=1, 
             screen_time_seconds=1000, 
-            unlock_count=20, 
-            app_usage={}
+            unlock_count=15, 
+            app_usage={"headspace": 700}
         )
     ]
     assert emotion_engine.analyze_behavior(data) == "Calm"
@@ -18,9 +18,9 @@ def test_analyze_behavior_anxious():
     data = [
         BehavioralData(
             user_id=1, 
-            screen_time_seconds=22000, 
+            screen_time_seconds=30000, 
             unlock_count=120, 
-            app_usage={}
+            app_usage={"tiktok": 15000}
         )
     ]
     assert emotion_engine.analyze_behavior(data) == "Anxious/Overwhelmed"
@@ -31,9 +31,9 @@ def test_fusion_score():
     # score = (-0.7 * 0.2) + (-1.0 * 0.3) + (-0.8 * 0.25) = -0.14 - 0.3 - 0.2 = -0.64
     assert emotion_engine.multi_modal_fusion(state, text_sentiment=-1.0, face_emotion="Angry") == "Critical Distress"
     
-    # Just anxious behavior + negative sentiment = Distressed/Anxious
-    # score = -0.14 - 0.24 = -0.38
-    assert emotion_engine.multi_modal_fusion(state, text_sentiment=-0.8) == "Distressed/Anxious"
+    # Just anxious behavior + negative sentiment = Critical Distress (due to correct weight normalization)
+    # score = -0.7 * (0.2/0.5) + -0.8 * (0.3/0.5) = -0.28 + -0.48 = -0.76 (<= -0.6)
+    assert emotion_engine.multi_modal_fusion(state, text_sentiment=-0.8) == "Critical Distress"
     
     # Positive sentiment
     # score = -0.14 + (0.8 * 0.3) = -0.14 + 0.24 = 0.1 (Neutral)

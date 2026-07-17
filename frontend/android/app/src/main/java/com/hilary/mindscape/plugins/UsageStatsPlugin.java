@@ -33,6 +33,13 @@ public class UsageStatsPlugin extends Plugin {
     }
 
     @PluginMethod
+    public void checkUsageAccess(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("granted", hasUsageStatsPermission());
+        call.resolve(result);
+    }
+
+    @PluginMethod
     public void getUsageSnapshot(PluginCall call) {
         if (!hasUsageStatsPermission()) {
             call.reject("USAGE_ACCESS_NOT_GRANTED");

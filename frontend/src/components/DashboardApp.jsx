@@ -34,14 +34,43 @@ const DashboardApp = () => {
 
       <div className="dash-grid">
         <div className="dash-card">
+          <h4>Wellbeing Score</h4>
+          <div className="big-stat score-stat">{data.wellbeing_score || 0}</div>
+          <p>0-100 Holistic Index</p>
+        </div>
+        <div className="dash-card">
           <h4>Active Modality</h4>
           <div className="big-stat">{data.last_detected_state || 'Neutral'}</div>
           <p>Fused multimodal state</p>
         </div>
-        <div className="dash-card">
-          <h4>Behavior Profile</h4>
-          <div className="big-stat">{data.behavior_history.length > 0 ? "Active" : "None"}</div>
-          <p>Last 30 Days</p>
+      </div>
+
+      <div className="dash-section">
+        <h3>App Usage Breakdown (Last 30 Days)</h3>
+        <div className="distribution-list">
+          {data.app_breakdown && Object.entries(data.app_breakdown).map(([category, time]) => {
+            const totalTime = Object.values(data.app_breakdown).reduce((a, b) => a + b, 0);
+            const percentage = totalTime > 0 ? (time / totalTime) * 100 : 0;
+            const hours = (time / 3600).toFixed(1);
+            
+            return (
+              <div key={category} className="dist-row">
+                <div className="dist-info">
+                  <span className="dist-label">{category}</span>
+                  <span className="dist-count">{hours} hrs</span>
+                </div>
+                <div className="dist-bar-bg">
+                  <div 
+                    className="dist-bar-fill" 
+                    style={{ 
+                      width: `${percentage}%`,
+                      backgroundColor: 'var(--color-blue)'
+                    }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

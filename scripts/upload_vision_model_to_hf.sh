@@ -22,7 +22,7 @@ elif [[ -x "${ROOT}/.venv/bin/hf" ]]; then
   HF_CMD="${ROOT}/.venv/bin/hf"
 fi
 
-if [[ -z "$HF_CMD" ]]; thenhf upload dvn404/hilary-mental-health-vision mental_health_image_model.pt mental_health_image_model.pt --repo-type model
+if [[ -z "$HF_CMD" ]]; then
   echo "Install the Hugging Face CLI: pip install -U huggingface_hub"
   echo "Then log in: hf auth login"
   exit 1

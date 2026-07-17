@@ -42,6 +42,10 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: Session
 @router.post("/register")
 def register(user_in: UserCreate, session: Session = Depends(get_session)):
     try:
+        # Password strength validation
+        if len(user_in.password) < 8:
+            raise HTTPException(status_code=400, detail="Password must be at least 8 characters long.")
+
         # Check if user exists (prevent UniqueViolation before it happens)
         existing_user = session.exec(select(User).where(User.email == user_in.email)).first()
         if existing_user:
@@ -80,11 +84,12 @@ def register(user_in: UserCreate, session: Session = Depends(get_session)):
                 detail="An account with this email already exists.",
             ) from e
         
-        # Log unexpected errors for debugging
-        print(f"CRITICAL REGISTRATION ERROR: {e}")
+        # Log unexpected errors for debugging (server-side only)
+        import logging
+        logging.getLogger("hilary-backend").error(f"CRITICAL REGISTRATION ERROR: {e}")
         raise HTTPException(
             status_code=500, 
-            detail=f"Registration Error: {str(e)}"
+            detail="An unexpected error occurred during registration. Please try again."
         ) from e
 
 @router.get("/me", response_model=UserRead)

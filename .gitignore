@@ -1,9 +1,24 @@
 venv/
-
-__pycache__
-frontend-rn/
 .venv/
+__pycache__/
+frontend-rn/
+
+# Secrets
 backend/.env
-backend/.env
-backend/.env
+
+# Data & artifacts that should not be in version control
+hilary.db
+backend.log
+mental_health_image_model.pt
+media/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend build output
+frontend/dist/
 frontend/android/local.properties

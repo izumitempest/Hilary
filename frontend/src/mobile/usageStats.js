@@ -2,6 +2,19 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 
 const UsageStats = registerPlugin('UsageStats');
 
+export async function checkUsageAccess() {
+  if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') {
+    return false;
+  }
+  try {
+    const { granted } = await UsageStats.checkUsageAccess();
+    return granted;
+  } catch (error) {
+    console.debug('Unable to check usage access:', error?.message || error);
+    return false;
+  }
+}
+
 export async function logMobileBehaviorSnapshot(apiClient) {
   if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') {
     return;

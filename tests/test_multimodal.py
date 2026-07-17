@@ -3,11 +3,8 @@ import io
 from PIL import Image
 import numpy as np
 import soundfile as sf
-from fastapi.testclient import TestClient
-from backend.main import app
-from backend.database import SQLModel, engine
-
-client = TestClient(app)
+from backend.models.user import User
+from sqlmodel import select
 
 def create_dummy_image():
     # Create a small blank image
@@ -23,13 +20,15 @@ def create_dummy_audio():
     sf.write(path, data, 44100)
     return path
 
-def test_multimodal_endpoints():
-    # Setup
-    SQLModel.metadata.create_all(engine)
-    
+def test_multimodal_endpoints(client, session):
     # 1. Register & Login
-    client.post("/auth/register", json={"email": "multi@example.com", "password": "pass"})
-    login_resp = client.post("/auth/login", data={"username": "multi@example.com", "password": "pass"})
+    client.post("/auth/register", json={"email": "multi@example.com", "password": "password123", "full_name": "Multi User"})
+    
+    user = session.exec(select(User).where(User.email == "multi@example.com")).first()
+    user.is_verified = True
+    session.commit()
+    
+    login_resp = client.post("/auth/login", data={"username": "multi@example.com", "password": "password123"})
     token = login_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
     

@@ -7,7 +7,9 @@ import os
 from io import BytesIO
 
 import torch
+# pyrefly: ignore [missing-import]
 import torchvision.transforms as transforms
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from huggingface_hub import hf_hub_download
@@ -54,7 +56,7 @@ def _resolve_model_path() -> str:
 def load_model():
     global model
     path = _resolve_model_path()
-    model = torch.load(path, map_location=device, weights_only=False)
+    model = torch.load(path, map_location=device, weights_only=True)
     if hasattr(model, "eval"):
         model.eval()
 

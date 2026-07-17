@@ -40,6 +40,7 @@ class GroqService:
         messages: List[Dict[str, str]],
         current_state: str,
         face_emotion: Optional[str] = None,
+        behavior_insights: str = "",
     ) -> Dict:
         system_prompt = f"""
         You are Hilary, a world-class AI psychotherapist. 
@@ -48,6 +49,7 @@ class GroqService:
         USER CONTEXT:
         The current detected emotional state is: "{current_state}".
         {f'Facial expression analysis from the user photo: "{face_emotion}". Factor this into your assessment.' if face_emotion else ''}
+        {f'Behavioral Insights from phone usage: {behavior_insights}' if behavior_insights else ''}
 
         INSTRUCTIONS:
         1. Respond with warmth and empathy.
@@ -148,8 +150,11 @@ class GroqService:
             return None
         url = (
             f"https://generativelanguage.googleapis.com/v1beta/models/{self.gemini_model}:generateContent"
-            f"?key={self.gemini_api_key}"
         )
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": self.gemini_api_key,
+        }
         payload = {
             "contents": [
                 {
@@ -163,7 +168,7 @@ class GroqService:
         }
         try:
             async with httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=20.0)) as client:
-                response = await client.post(url, json=payload)
+                response = await client.post(url, json=payload, headers=headers)
                 response.raise_for_status()
                 data = response.json()
                 candidates = data.get("candidates", [])

@@ -6,6 +6,8 @@ from ..models.user import User
 from .auth import get_current_user
 from ..services.ai_service import ai_service
 from ..services.emotion_engine import emotion_engine
+from ..services.alert_service import alert_service
+import re
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
@@ -34,17 +36,32 @@ async def chat(
     text_sentiment = request.text_sentiment
     if text_sentiment == 0.0 and request.messages:
         last_msg = request.messages[-1].get("content", "").lower()
-        neg_words = ["sad", "depress", "kill", "die", "hurt", "pain", "anxious", "scared", "hate", "worthless", "empty", "lonely"]
-        pos_words = ["happy", "good", "great", "better", "excited", "love", "joy", "hope", "thanks", "calm"]
+        
+        # Robust Regex-based heuristic
+        # Ensure we match whole words to avoid 'saddle' -> 'sad'
+        neg_pattern = re.compile(r'\b(sad|depressed|depression|kill|die|hurt|pain|anxious|scared|hate|worthless|empty|lonely)\b', re.IGNORECASE)
+        pos_pattern = re.compile(r'\b(happy|good|great|better|excited|love|joy|hope|thanks|calm)\b', re.IGNORECASE)
+        negation_pattern = re.compile(r'\b(not|never|dont|don\'t|cannot|can\'t)\s+\w+', re.IGNORECASE)
         
         score = 0.0
-        for w in neg_words:
-            if w in last_msg: score -= 0.6
-        for w in pos_words:
-            if w in last_msg: score += 0.4
-        if "kill myself" in last_msg or "hurt myself" in last_msg or "end it" in last_msg:
-            score -= 2.0
+        
+        # Check for negations first to discount simple matches
+        negations = negation_pattern.findall(last_msg)
+        # Simplified: if there's a negation, we're less certain about heuristics.
+        
+        neg_matches = len(neg_pattern.findall(last_msg))
+        pos_matches = len(pos_pattern.findall(last_msg))
+        
+        if not negations:
+            score -= (0.4 * neg_matches)
+            score += (0.3 * pos_matches)
             
+        # Precise crisis phrase matching
+        crisis_phrases = [r'\bkill myself\b', r'\bend my life\b', r'\bi want to die\b', r'\bhurt myself\b']
+        for phrase in crisis_phrases:
+            if re.search(phrase, last_msg, re.IGNORECASE):
+                score -= 2.0
+                
         text_sentiment = max(-1.0, min(1.0, score))
 
     # 3. Process Vision Modality if image provided
@@ -63,11 +80,15 @@ async def chat(
         voice_tone=request.voice_tone
     )
     
-    # 5. Get response from Groq (Now returns JSON with sentiment)
+    # 5. Generate behavioral insights for AI
+    behavior_insights = emotion_engine.generate_behavior_insights(behaviors)
+    
+    # 6. Get response from Groq (Now returns JSON with sentiment)
     ai_data = await ai_service.get_therapist_response(
         request.messages,
         preliminary_state,
         face_emotion=face_emotion,
+        behavior_insights=behavior_insights
     )
     
     final_state = emotion_engine.resolve_final_state(
@@ -106,7 +127,6 @@ async def chat(
     session.add(assistant_msg_db)
     
     # 6. Proactive Alerts
-    from ..services.alert_service import alert_service
     alert_service.trigger_alert(session, current_user.id, final_state)
     
     session.commit()
